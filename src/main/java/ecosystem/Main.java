@@ -1,0 +1,78 @@
+package ecosystem;
+
+import ecosystem.core.Environment;
+import ecosystem.core.Position;
+import ecosystem.core.SimulationEngine;
+import ecosystem.entities.animals.Deer;
+import ecosystem.entities.animals.Lion;
+import ecosystem.entities.animals.Rabbit;
+import ecosystem.entities.plants.Flower;
+import ecosystem.entities.plants.Tree;
+import ecosystem.entities.resources.Rock;
+import ecosystem.entities.resources.Water;
+
+/**
+ * Entry point — builds an initial world and runs the simulation for a fixed
+ * number of ticks.
+ *
+ * <p>Grid legend printed before the first tick:
+ * <pre>
+ *   L = Lion     D = Deer      R = Rabbit
+ *   T = Tree     F = Flower
+ *   # = Rock     ~ = Water     . = Empty cell
+ * </pre>
+ */
+public class Main {
+
+    public static void main(String[] args) throws InterruptedException {
+        Environment env = new Environment();
+
+        // ---- Static resources ----
+        env.addEntity(new Rock(new Position(3, 3)));
+        env.addEntity(new Rock(new Position(4, 3)));
+        env.addEntity(new Rock(new Position(5, 3)));
+        env.addEntity(new Rock(new Position(10, 10)));
+        env.addEntity(new Rock(new Position(11, 10)));
+
+        env.addEntity(new Water(new Position(8,  8)));
+        env.addEntity(new Water(new Position(9,  8)));
+        env.addEntity(new Water(new Position(8,  9)));
+
+        // ---- Plants ----
+        env.addEntity(new Tree(new Position(2,  2)));
+        env.addEntity(new Tree(new Position(15, 15)));
+        env.addEntity(new Tree(new Position(1,  12)));
+
+        env.addEntity(new Flower(new Position(6,  6)));
+        env.addEntity(new Flower(new Position(12, 4)));
+        env.addEntity(new Flower(new Position(7,  14)));
+        env.addEntity(new Flower(new Position(17, 7)));
+
+        // ---- Herbivores ----
+        env.addEntity(new Deer(new Position(5,  5)));
+        env.addEntity(new Deer(new Position(14, 14)));
+
+        env.addEntity(new Rabbit(new Position(6,  7)));
+        env.addEntity(new Rabbit(new Position(11, 11)));
+        env.addEntity(new Rabbit(new Position(3,  12)));
+        env.addEntity(new Rabbit(new Position(16, 3)));
+
+        // ---- Carnivore ----
+        env.addEntity(new Lion(new Position(10, 5)));
+
+        // ---- Run ----
+        SimulationEngine engine = new SimulationEngine(env);
+
+        System.out.println("Ecosystem Simulation started on a "
+                + Environment.WIDTH + "×" + Environment.HEIGHT + " grid.");
+        System.out.println("Legend: L=Lion  D=Deer  R=Rabbit  T=Tree  F=Flower  #=Rock  ~=Water  .=Empty");
+
+        int totalTicks = 30;
+        for (int i = 0; i < totalTicks; i++) {
+            engine.tick();
+            Thread.sleep(200);   // 200 ms pause — remove/reduce for speed runs
+        }
+
+        System.out.println("\nSimulation complete after " + totalTicks + " ticks.");
+    }
+}
