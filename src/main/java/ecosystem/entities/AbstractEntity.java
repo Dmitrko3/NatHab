@@ -3,13 +3,9 @@ package ecosystem.entities;
 import ecosystem.core.Position;
 
 /**
- * Root of the entity hierarchy.
+ * Base class for all entities.
  *
- * <p>All concrete entity types live on the simulation grid and carry at least a
- * position, a display symbol, and an alive flag.
- *
- * <p><b>equals contract:</b> two entities are equal only when they are the same
- * object (reference / identity equality).  No downcasting is performed.
+ * <p>Each entity has a position, a display symbol, and an alive state.
  */
 public abstract class AbstractEntity {
 
@@ -30,9 +26,7 @@ public abstract class AbstractEntity {
     public Position getPosition() { return position; }
 
     /**
-     * Updates this entity's position field.  Callers must also call
-     * {@link ecosystem.core.Environment#updateEntityPosition} to keep the
-     * spatial map consistent.
+     * Updates this entity's position.
      */
     public void setPosition(Position position) { this.position = position; }
 

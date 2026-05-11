@@ -5,11 +5,9 @@ import ecosystem.entities.AbstractEntity;
 import java.util.*;
 
 /**
- * Represents the 2-D grid world.  Manages entity placement, lookup, and
- * spatial queries.
+ * Represents the 2D world where entities live.
  *
- * <p>Invariant: every living entity appears both in {@code mapGrid} (keyed by
- * its current position) and in {@code entitiesList}.
+ * <p>Keeps track of where entities are placed and helps find nearby entities.
  */
 public class Environment {
 
@@ -34,8 +32,7 @@ public class Environment {
     // -------------------------------------------------------------------------
 
     /**
-     * Returns {@code true} when {@code pos} is inside the grid bounds AND no
-     * living entity currently occupies that cell.
+     * Returns {@code true} if the position is inside the grid and the cell is free.
      */
     public boolean isPositionFree(Position pos) {
         if (pos.getX() < 0 || pos.getX() >= WIDTH
@@ -48,8 +45,7 @@ public class Environment {
     }
 
     /**
-     * Returns all living entities whose Manhattan distance from {@code pos} is
-     * at most 2, excluding any entity located exactly at {@code pos}.
+     * Returns all living entities that are close to the given position.
      */
     public List<AbstractEntity> getNearbyEntities(Position pos) {
         List<AbstractEntity> nearby = new ArrayList<>();
@@ -68,9 +64,9 @@ public class Environment {
     // -------------------------------------------------------------------------
 
     /**
-     * Adds an entity to the world at its current position.
+     * Adds an entity to the world.
      *
-     * @return {@code true} if the entity was placed successfully
+     * @return {@code true} if the entity was added successfully
      */
     public boolean addEntity(AbstractEntity entity) {
         if (entity == null) return false;
@@ -81,9 +77,9 @@ public class Environment {
     }
 
     /**
-     * Removes a (usually dead) entity from both the spatial map and the list.
+     * Adds an entity to the world.
      *
-     * @return {@code true} if the entity was found and removed
+     * @return {@code true} if the entity was added successfully
      */
     public boolean removeEntity(AbstractEntity entity) {
         if (entity == null) return false;
@@ -93,9 +89,7 @@ public class Environment {
     }
 
     /**
-     * Updates the spatial map when an entity moves from {@code oldPos} to
-     * {@code newPos}.  Must be called <em>after</em> updating the entity's
-     * own position field.
+     * Updates the entity's position in the map after it moves.
      */
     public void updateEntityPosition(AbstractEntity entity,
                                      Position oldPos, Position newPos) {
@@ -107,7 +101,7 @@ public class Environment {
     // Accessors
     // -------------------------------------------------------------------------
 
-    /** Returns a read-only view of the entity list (snapshot-safe for iteration). */
+    /** Returns a read-only list of entities. */
     public List<AbstractEntity> getEntitiesList() {
         return Collections.unmodifiableList(entitiesList);
     }

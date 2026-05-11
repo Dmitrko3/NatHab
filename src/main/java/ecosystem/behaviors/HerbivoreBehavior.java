@@ -8,11 +8,10 @@ import ecosystem.interfaces.EdibleByHerbivore;
 import java.util.List;
 
 /**
- * Feeding strategy for herbivores.
+ * Feeding behavior for herbivores.
  *
- * <p>Scans the pre-move nearby list for the closest live
- * {@link EdibleByHerbivore} entity that is also {@link Consumable}, then
- * delegates consumption to {@link Animal#eat}.
+ * <p>Looks through nearby entities and finds the closest living thing
+ * that a herbivore can eat. If one is found, the animal eats it.
  *
  * <p>Used by {@link ecosystem.entities.animals.Deer} and
  * {@link ecosystem.entities.animals.Rabbit}.

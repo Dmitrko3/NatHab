@@ -9,18 +9,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Drives the simulation forward one discrete time-step ("tick") at a time.
+ * Runs the simulation one step at a time.
  *
- * <p>Each tick follows this sequence:
- * <ol>
- *   <li><b>Act phase</b>  – every live {@link Actable} entity acts.</li>
- *   <li><b>Cleanup phase</b> – dead entities are removed from the world.</li>
- *   <li><b>Render phase</b>  – the grid map and statistics are printed.</li>
- * </ol>
- *
- * Iterating over a <em>snapshot</em> of the entity list during the act phase
- * ensures that entities added mid-tick (e.g. newborn rabbits) do not act until
- * the following tick, and that the iterator is never invalidated.
+ * <p>During each step, living entities act, dead entities are removed,
+ * and the world is shown.
  */
 public class SimulationEngine {
 

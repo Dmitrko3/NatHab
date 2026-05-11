@@ -5,18 +5,12 @@ import ecosystem.core.Position;
 import ecosystem.interfaces.Actable;
 
 /**
- * An entity that is alive, ages, and expends energy every tick.
+ * An entity that is alive and changes each turn.
  *
- * <p>Default {@link #act} behaviour:
- * <ul>
- *   <li>Increments {@code age} by 1.</li>
- *   <li>Decreases {@code energy} by 2 (baseline metabolic cost).</li>
- *   <li>Marks the entity dead when energy reaches 0.</li>
- * </ul>
+ * <p>Each turn, it gets older and loses energy.
+ * If its energy reaches 0, it dies.
  *
- * Subclasses should call {@code super.act(environment)} first, then add their
- * own behaviour — <em>unless</em> they want to skip the energy drain (e.g.
- * {@link plants.Plant}).
+ * <p>Subclasses can add their own behavior after this basic action.
  */
 public abstract class LivingEntity extends AbstractEntity implements Actable {
 

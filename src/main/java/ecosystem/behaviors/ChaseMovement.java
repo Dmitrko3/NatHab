@@ -8,11 +8,10 @@ import ecosystem.interfaces.EdibleByCarnivore;
 
 import java.util.List;
 import java.util.Random;
-
 /**
- * Moves an animal one step toward the nearest {@link EdibleByCarnivore} in its
- * perception range.  Falls back to {@link RandomMovement} when no prey is
- * visible.
+ * Moves an animal one step toward the nearest prey.
+ *
+ * <p>If there is no prey nearby, the animal moves randomly.
  *
  * <p>Used by {@link ecosystem.entities.animals.Lion}.
  */

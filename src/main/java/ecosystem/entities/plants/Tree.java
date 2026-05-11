@@ -6,14 +6,9 @@ import ecosystem.core.Position;
 import java.util.Random;
 
 /**
- * A Tree — large, slow-growing plant that reproduces into immediately adjacent
- * (distance = 1) cells.
+ * A tree on the grid.
  *
- * <ul>
- *   <li>Symbol: {@code 'T'}</li>
- *   <li>Initial energy: 80 | Max energy: 150 | Growth rate: 5 / tick</li>
- *   <li>Reproduction chance: 10 % per tick; one sapling at distance 1</li>
- * </ul>
+ * <p>Trees grow slowly and can create new trees in nearby cells.
  */
 public class Tree extends Plant {
 
@@ -29,8 +24,7 @@ public class Tree extends Plant {
     // -------------------------------------------------------------------------
 
     /**
-     * With 10 % probability, attempts to place a sapling in the first free
-     * adjacent (distance-1) cell.
+     * Sometimes tries to grow a new tree in a nearby free cell.
      */
     @Override
     public boolean reproduce(Environment environment) {

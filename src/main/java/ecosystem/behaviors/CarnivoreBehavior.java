@@ -8,11 +8,10 @@ import ecosystem.interfaces.EdibleByCarnivore;
 import java.util.List;
 
 /**
- * Feeding strategy for carnivores.
+ * Feeding behavior for carnivores.
  *
- * <p>Scans the pre-move nearby list for the closest live
- * {@link EdibleByCarnivore} entity that is also {@link Consumable}, then
- * delegates consumption to {@link Animal#eat}.
+ * <p>Looks through the nearby entities and finds the closest living entity
+ * that a carnivore can eat. If a valid target is found, the animal eats it.
  *
  * <p>Used by {@link ecosystem.entities.animals.Lion}.
  */

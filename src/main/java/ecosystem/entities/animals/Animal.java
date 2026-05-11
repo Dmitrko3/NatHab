@@ -11,27 +11,17 @@ import ecosystem.interfaces.*;
 import java.util.List;
 
 /**
- * Base class for all animals in the simulation.
+ * Base class for all animals.
  *
- * <p>An animal delegates its <em>how-to-move</em> logic to a
- * {@link MovementStrategy} and its <em>how-to-feed</em> logic to a
- * {@link FeedingBehavior}, following the Strategy design pattern.
+ * <p>Animals can move, eat, age, and lose energy each turn.
+ * They use movement and feeding behaviors to decide how to act.
  *
- * <p>Per-tick sequence (via {@link #act}):
- * <ol>
- *   <li>Age + energy drain ({@code super.act}).</li>
- *   <li>Sense nearby entities.</li>
- *   <li>Move (strategy).</li>
- *   <li>Eat from the pre-move nearby list (strategy).</li>
- * </ol>
- *
- * <p>Animals also implement {@link Consumable} so they can themselves be eaten
- * (yielding 80 % of their current energy).
+ * <p>Animals can also be eaten by other animals.
  */
 public abstract class Animal extends LivingEntity
         implements Movable, Eater, Sensory, Consumable {
 
-    /** Fixed perception radius (Manhattan distance). */
+    /** Distance an animal can sense nearby entities. */
     protected static final int VISION_RANGE = 2;
 
     protected MovementStrategy movementStrategy;
@@ -74,8 +64,7 @@ public abstract class Animal extends LivingEntity
     // -------------------------------------------------------------------------
 
     /**
-     * Consumes {@code target}: invokes its {@code onConsumed()} callback then
-     * credits this animal's energy account.
+     * Eats the target and adds its energy to this animal.
      */
     @Override
     public boolean eat(Consumable target) {
@@ -99,13 +88,13 @@ public abstract class Animal extends LivingEntity
     // Consumable  (animals can be prey)
     // -------------------------------------------------------------------------
 
-    /** Prey yields 80 % of its current energy as nutrition. */
+    /** Returns how much energy this animal gives when eaten. */
     @Override
     public double getNutritionValue() {
         return energy * 0.8;
     }
 
-    /** Being consumed kills this animal. */
+    /** Kills this animal when it is eaten. */
     @Override
     public void onConsumed() {
         alive = false;

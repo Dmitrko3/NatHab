@@ -3,10 +3,9 @@ package ecosystem.entities;
 import ecosystem.core.Position;
 
 /**
- * An entity that never changes state over time — it does not act, age, or
- * consume energy.
+ * An entity that does not change over time.
  *
- * <p>Examples: {@link resources.Rock}, {@link resources.Water}.
+ * <p>It does not act, age, or use energy.
  */
 public abstract class StaticEntity extends AbstractEntity {
 

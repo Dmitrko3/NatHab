@@ -4,7 +4,7 @@ import ecosystem.core.Position;
 import ecosystem.entities.StaticEntity;
 
 /**
- * A static, non-living world resource (rocks, water, etc.).
+ * A fixed world resource, such as a rock or water.
  */
 public abstract class Resource extends StaticEntity {
 

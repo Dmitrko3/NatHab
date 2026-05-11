@@ -6,18 +6,17 @@ import ecosystem.entities.animals.Animal;
 import java.util.List;
 
 /**
- * Strategy interface for animal feeding.
+ * Feeding behavior for animals.
  *
- * <p>Receives the pre-move snapshot of nearby entities so implementations can
- * pick the best target and delegate to {@link Animal#eat}.
+ * <p>Uses the nearby entities to choose what the animal should try to eat.
  */
 public interface FeedingBehavior {
     /**
-     * Attempts to eat the most appropriate target from {@code nearby}.
+     * Tries to eat the best available target nearby.
      *
      * @param animal the animal that is eating
-     * @param nearby entities perceived by the animal before its move this tick
-     * @return {@code true} if something was successfully consumed
+     * @param nearby nearby entities the animal can see
+     * @return {@code true} if the animal ate something
      */
     boolean eat(Animal animal, java.util.List<AbstractEntity> nearby);
 }

@@ -11,13 +11,11 @@ import java.util.List;
 import java.util.Random;
 
 /**
- * Moves an animal <em>away</em> from the nearest predator in its perception
- * range.  Falls back to {@link RandomMovement} when no threat is detected.
+ * Moves an animal one step toward the nearest prey.
  *
- * <p>A "predator" is defined as any living {@link Animal} that does <em>not</em>
- * implement {@link EdibleByCarnivore} — i.e. not itself prey.
+ * <p>If there is no prey nearby, the animal moves randomly.
  *
- * <p>Used by {@link ecosystem.entities.animals.Deer}.
+ * <p>Used by {@link ecosystem.entities.animals.Lion}.
  */
 public class EscapeMovement implements MovementStrategy {
 

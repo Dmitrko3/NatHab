@@ -19,10 +19,10 @@ public class Position {
     public int getY() { return y; }
 
     /**
-     * Manhattan (taxi-cab) distance between this position and {@code other}.
+     * Returns the distance between this position and another position.
      *
-     * @param other the target position
-     * @return |Δx| + |Δy|
+     * @param other the other position
+     * @return the distance between the two positions
      */
     public int distanceTo(Position other) {
         return Math.abs(this.x - other.x) + Math.abs(this.y - other.y);

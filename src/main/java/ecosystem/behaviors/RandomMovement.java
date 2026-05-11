@@ -7,10 +7,10 @@ import ecosystem.entities.animals.Animal;
 import java.util.Random;
 
 /**
- * Moves an animal to a randomly chosen free adjacent (distance-1) cell.
+ * Moves an animal to a random free nearby cell.
  *
- * <p>All four cardinal directions are shuffled before trying, so there is no
- * directional bias.  The animal stays put if all neighbours are occupied.
+ * <p>The animal checks the four main directions in random order.
+ * If there is no free cell, it stays where it is.
  */
 public class RandomMovement implements MovementStrategy {
 

@@ -5,14 +5,9 @@ import ecosystem.behaviors.ChaseMovement;
 import ecosystem.core.Position;
 
 /**
- * A Lion — apex predator that chases and eats {@link EdibleByCarnivore} prey.
+ * A lion on the grid.
  *
- * <ul>
- *   <li>Symbol: {@code 'L'}</li>
- *   <li>Starting energy: 100 | Max energy: 150</li>
- *   <li>Movement: {@link ChaseMovement} (hunts nearest prey)</li>
- *   <li>Feeding:  {@link CarnivoreBehavior}</li>
- * </ul>
+ * <p>Lions are carnivores. They chase and eat prey.
  */
 public class Lion extends Animal {
 

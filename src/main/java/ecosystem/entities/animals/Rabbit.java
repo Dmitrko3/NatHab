@@ -10,18 +10,10 @@ import ecosystem.interfaces.Reproducible;
 import java.util.Random;
 
 /**
- * A Rabbit — fast-reproducing herbivore that wanders randomly.
+ * A rabbit on the grid.
  *
- * <ul>
- *   <li>Symbol: {@code 'R'}</li>
- *   <li>Starting energy: 50 | Max energy: 100</li>
- *   <li>Movement: {@link RandomMovement}</li>
- *   <li>Feeding:  {@link HerbivoreBehavior}</li>
- *   <li>Markers:  {@link EdibleByCarnivore}, {@link Reproducible}</li>
- * </ul>
- *
- * <p>Each tick, if energy > 30 there is a 30 % chance the rabbit spawns one
- * offspring in an adjacent free cell.
+ * <p>Rabbits are Carnivores. They move randomly, not eat plants,
+ * and can create new rabbits when they have enough energy.
  */
 public class Rabbit extends Animal implements EdibleByCarnivore, Reproducible {
 
@@ -33,7 +25,7 @@ public class Rabbit extends Animal implements EdibleByCarnivore, Reproducible {
     public Rabbit(Position position) {
         super(position, 'R', 50, 100,
               new RandomMovement(),
-              new HerbivoreBehavior());
+              new CarnivoreBehavior());
     }
 
     // -------------------------------------------------------------------------
@@ -55,9 +47,9 @@ public class Rabbit extends Animal implements EdibleByCarnivore, Reproducible {
     // -------------------------------------------------------------------------
 
     /**
-     * Places one newborn rabbit in the first free adjacent cell found.
+     * Creates a baby rabbit in a nearby free cell.
      *
-     * @return {@code true} if a baby was successfully placed
+     * @return {@code true} if the baby rabbit was added successfully
      */
     @Override
     public boolean reproduce(Environment environment) {

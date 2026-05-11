@@ -9,14 +9,9 @@ import java.util.List;
 import java.util.Random;
 
 /**
- * A Flower — small, fast-spreading plant that can scatter 1–3 seeds into cells
- * at Manhattan distance 1 or 2 each tick.
+ * A flower on the grid.
  *
- * <ul>
- *   <li>Symbol: {@code 'F'}</li>
- *   <li>Initial energy: 30 | Max energy: 60 | Growth rate: 3 / tick</li>
- *   <li>Reproduction chance: 20 % per tick; 1–3 offspring at distance ≤ 2</li>
- * </ul>
+ * <p>Flowers grow quickly and can spread seeds to nearby cells.
  */
 public class Flower extends Plant {
 
@@ -31,8 +26,7 @@ public class Flower extends Plant {
     // -------------------------------------------------------------------------
 
     /**
-     * With 20 % probability, spawns 1–3 new flowers in randomly chosen free
-     * cells at Manhattan distance 1 or 2.
+     * Sometimes creates new flowers in nearby free cells.
      */
     @Override
     public boolean reproduce(Environment environment) {

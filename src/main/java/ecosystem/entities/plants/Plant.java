@@ -6,24 +6,19 @@ import ecosystem.entities.LivingEntity;
 import ecosystem.interfaces.Consumable;
 import ecosystem.interfaces.EdibleByHerbivore;
 import ecosystem.interfaces.Reproducible;
-
 /**
- * Base class for all plant entities.
+ * Base class for all plants.
  *
- * <p>Plants are {@link EdibleByHerbivore}, grow passively each tick (gaining
- * energy up to {@code maxEnergy}), and can reproduce into neighbouring cells.
- *
- * <p>{@link #act} is fully overridden here — {@code super.act()} is
- * intentionally <em>not</em> called so that plants do <em>not</em> lose the
- * standard metabolic 2-energy-per-tick cost that animals pay.
+ * <p>Plants can be eaten by herbivores, grow over time,
+ * and can create new plants in nearby cells.
  */
 public abstract class Plant extends LivingEntity
         implements EdibleByHerbivore, Consumable, Reproducible {
 
-    /** Energy units gained per tick from photosynthesis. */
+    /** Energy gained each turn from sunlight. */
     protected double growthRate;
 
-    /** Probability [0, 1] of spawning offspring each tick. */
+    /** Chance to create a new plant each turn. */
     protected double reproductionChance;
 
     protected Plant(Position position, char symbol,

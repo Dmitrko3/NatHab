@@ -2,17 +2,10 @@ package ecosystem.entities.resources;
 
 import ecosystem.core.Position;
 import ecosystem.interfaces.Consumable;
-
 /**
- * A permanent water source on the grid.
+ * A water source on the grid.
  *
- * <p>Water is {@link Consumable} (yields 100 energy) but its
- * {@link #onConsumed()} is a no-op — the water tile never disappears.
- *
- * <ul>
- *   <li>Symbol: {@code '~'}</li>
- *   <li>Nutrition value: 100</li>
- * </ul>
+ * <p>Water can be consumed for energy, but it does not disappear.
  */
 public class Water extends Resource implements Consumable {
 
@@ -25,7 +18,7 @@ public class Water extends Resource implements Consumable {
         return 100;
     }
 
-    /** Water replenishes itself — consuming it has no effect on the tile. */
+    /** Consuming water does not remove it from the grid. */
     @Override
     public void onConsumed() {
         // intentionally empty

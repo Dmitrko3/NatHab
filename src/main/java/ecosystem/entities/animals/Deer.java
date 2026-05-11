@@ -6,15 +6,9 @@ import ecosystem.core.Position;
 import ecosystem.interfaces.EdibleByCarnivore;
 
 /**
- * A Deer — herbivore that tries to flee from carnivores.
+ * A deer on the grid.
  *
- * <ul>
- *   <li>Symbol: {@code 'D'}</li>
- *   <li>Starting energy: 70 | Max energy: 120</li>
- *   <li>Movement: {@link EscapeMovement} (flees from non-prey animals)</li>
- *   <li>Feeding:  {@link HerbivoreBehavior}</li>
- *   <li>Marker:   {@link EdibleByCarnivore}</li>
- * </ul>
+ * <p>Deer are herbivores. They eat plants and try to run away from carnivores.
  */
 public class Deer extends Animal implements EdibleByCarnivore {
 
