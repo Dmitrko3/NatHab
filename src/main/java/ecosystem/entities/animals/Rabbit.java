@@ -10,6 +10,7 @@ import ecosystem.interfaces.Reproducible;
 
 import java.util.Random;
 
+
 /**
  * A rabbit on the grid.
  *
@@ -17,6 +18,7 @@ import java.util.Random;
  * and can create new rabbits when they have enough energy.
  */
 public class Rabbit extends Animal implements EdibleByCarnivore, Reproducible {
+    private static final double BABY_STARTING_ENERGY = 20.0;
 
     private static final Random RANDOM = new Random();
 
@@ -61,7 +63,9 @@ public class Rabbit extends Animal implements EdibleByCarnivore, Reproducible {
                     position.getX() + offset[0],
                     position.getY() + offset[1]);
             if (environment.isPositionFree(candidate)) {
-                return environment.addEntity(new Rabbit(candidate));
+                Rabbit baby = new Rabbit(candidate);
+                baby.setEnergy(BABY_STARTING_ENERGY);
+                return environment.addEntity(baby);
             }
         }
         return false;   // all adjacent cells occupied

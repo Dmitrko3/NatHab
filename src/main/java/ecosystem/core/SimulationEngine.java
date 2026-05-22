@@ -17,16 +17,30 @@ import java.util.List;
 public class SimulationEngine {
 
     private final Environment environment;
+    private final List<SimulationListener> listeners;
     private int tickCount;
 
     public SimulationEngine(Environment environment) {
         this.environment = environment;
+        this.listeners = new ArrayList<>();
         this.tickCount   = 0;
     }
 
     // -------------------------------------------------------------------------
     // Public API
     // -------------------------------------------------------------------------
+
+    /** Register a listener to be notified when the simulation updates. */
+    public void addSimulationListener(SimulationListener listener) {
+        if (listener != null) {
+            listeners.add(listener);
+        }
+    }
+
+    /** Remove a previously registered simulation listener. */
+    public void removeSimulationListener(SimulationListener listener) {
+        listeners.remove(listener);
+    }
 
     /** Advance the simulation by one tick. */
     public void tick() {
@@ -54,9 +68,22 @@ public class SimulationEngine {
         // --- 3. Render phase ---
         printMap();
         printStats();
+
+        // --- 4. Notify observers ---
+        notifySimulationListeners();
     }
 
     public int getTickCount() { return tickCount; }
+
+    // -------------------------------------------------------------------------
+    // Private observer helpers
+    // -------------------------------------------------------------------------
+
+    private void notifySimulationListeners() {
+        for (SimulationListener listener : listeners) {
+            listener.onSimulationUpdated(environment);
+        }
+    }
 
     // -------------------------------------------------------------------------
     // Private rendering helpers
@@ -95,13 +122,13 @@ public class SimulationEngine {
 
         long totalAlive = all.stream().filter(AbstractEntity::isAlive).count();
         long animals    = all.stream()
-                             .filter(e -> e instanceof Animal && e.isAlive())
-                             .count();
+                .filter(e -> e instanceof Animal && e.isAlive())
+                .count();
         long plants     = all.stream()
-                             .filter(e -> e instanceof Plant && e.isAlive())
-                             .count();
+                .filter(e -> e instanceof Plant && e.isAlive())
+                .count();
 
         System.out.printf("Stats: total_alive=%-4d | animals=%-4d | plants=%-4d%n",
-                          totalAlive, animals, plants);
+                totalAlive, animals, plants);
     }
 }
