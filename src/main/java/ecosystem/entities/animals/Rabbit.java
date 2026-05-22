@@ -1,6 +1,7 @@
 package ecosystem.entities.animals;
 
 import ecosystem.behaviors.HerbivoreBehavior;
+import ecosystem.behaviors.FeedingBehavior;
 import ecosystem.behaviors.RandomMovement;
 import ecosystem.core.Environment;
 import ecosystem.core.Position;
@@ -25,7 +26,9 @@ public class Rabbit extends Animal implements EdibleByCarnivore, Reproducible {
     public Rabbit(Position position) {
         super(position, 'R', 50, 100,
               new RandomMovement(),
-              new CarnivoreBehavior());
+              new HerbivoreBehavior());
+
+
     }
 
     // -------------------------------------------------------------------------
