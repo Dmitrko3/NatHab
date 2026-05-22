@@ -1,17 +1,11 @@
 package ecosystem.ui;
 
-import ecosystem.controller.SimulationController;
-import ecosystem.core.Environment;
-import ecosystem.core.Position;
-import ecosystem.entities.AbstractEntity;
-import ecosystem.entities.LivingEntity;
-import ecosystem.entities.animals.Deer;
-import ecosystem.entities.animals.Lion;
-import ecosystem.entities.animals.Rabbit;
-import ecosystem.entities.plants.Flower;
-import ecosystem.entities.plants.Tree;
-import ecosystem.entities.resources.Rock;
-import ecosystem.entities.resources.Water;
+import ecosystem.controller.*;
+import ecosystem.core.*;
+import ecosystem.entities.*;
+import ecosystem.entities.animals.*;
+import ecosystem.entities.plants.*;
+import ecosystem.entities.resources.*;
 
 import javax.swing.BorderFactory;
 import javax.swing.JComboBox;

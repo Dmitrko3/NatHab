@@ -1,6 +1,6 @@
 package ecosystem.interfaces;
 
-import ecosystem.core.Environment;
+import ecosystem.core.*;
 
 /**
  * Marker contract for entities that can perform an action each simulation tick.

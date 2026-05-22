@@ -64,6 +64,7 @@ public class Main {
 
             // ---- Carnivore ----
             env.addEntity(new Lion(new Position(10, 5)));
+            env.addEntity(new Lion(new Position(11, 7)));
 
             SimulationEngine engine = new SimulationEngine(env);
             SimulationController controller = new SimulationController(engine, env);

@@ -1,10 +1,9 @@
 package ecosystem.behaviors;
 
-import ecosystem.core.Environment;
-import ecosystem.core.Position;
-import ecosystem.entities.AbstractEntity;
-import ecosystem.entities.animals.Animal;
-import ecosystem.interfaces.EdibleByCarnivore;
+import ecosystem.core.*;
+import ecosystem.entities.*;
+import ecosystem.entities.animals.*;
+import ecosystem.interfaces.*;
 
 import java.util.ArrayList;
 import java.util.List;

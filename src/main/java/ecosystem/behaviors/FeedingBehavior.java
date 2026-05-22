@@ -1,7 +1,7 @@
 package ecosystem.behaviors;
 
-import ecosystem.entities.AbstractEntity;
-import ecosystem.entities.animals.Animal;
+import ecosystem.entities.*;
+import ecosystem.entities.animals.*;
 
 import java.util.List;
 

@@ -1,6 +1,6 @@
 package ecosystem.ui;
 
-import ecosystem.controller.SimulationController;
+import ecosystem.controller.*;
 import ecosystem.core.*;
 
 import javax.swing.*;

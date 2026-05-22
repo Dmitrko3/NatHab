@@ -1,9 +1,9 @@
 package ecosystem.core;
 
-import ecosystem.entities.AbstractEntity;
-import ecosystem.entities.animals.Animal;
-import ecosystem.entities.plants.Plant;
-import ecosystem.interfaces.Actable;
+import ecosystem.entities.*;
+import ecosystem.entities.animals.*;
+import ecosystem.entities.plants.*;
+import ecosystem.interfaces.*;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -74,6 +74,23 @@ public class SimulationEngine {
     }
 
     public int getTickCount() { return tickCount; }
+
+    /**
+     * Resets the simulation engine state (tick counter) and notifies listeners
+     * so the UI can refresh (for example after clearing the environment).
+     */
+    public void reset() {
+        this.tickCount = 0;
+        notifySimulationListeners();
+    }
+
+    /**
+     * Publishes the current world state to listeners without advancing the simulation.
+     * Useful when external code modifies the environment and wants the UI to refresh.
+     */
+    public void publishUpdate() {
+        notifySimulationListeners();
+    }
 
     // -------------------------------------------------------------------------
     // Private observer helpers

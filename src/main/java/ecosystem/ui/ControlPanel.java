@@ -1,6 +1,6 @@
 package ecosystem.ui;
 
-import ecosystem.controller.SimulationController;
+import ecosystem.controller.*;
 
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
@@ -55,8 +55,8 @@ public class ControlPanel extends JPanel {
         stopButton.addActionListener(event -> controller.stopContinuousRun());
 
         resetButton.addActionListener(event -> {
-            // Planned for later: reset simulation state.
-            System.out.println("Reset button clicked.");
+            // Reset the simulation to an empty state
+            controller.resetSimulation();
         });
 
         addEntityButton.addActionListener(event -> {

@@ -1,6 +1,6 @@
 package ecosystem.core;
 
-import ecosystem.entities.AbstractEntity;
+import ecosystem.entities.*;
 
 import java.util.*;
 
@@ -109,5 +109,14 @@ public class Environment {
     /** Returns a read-only view of the spatial map. */
     public Map<Position, AbstractEntity> getMapGrid() {
         return Collections.unmodifiableMap(mapGrid);
+    }
+
+    /**
+     * Clears the world, removing all entities and freeing all cells.
+     * Useful for resetting the simulation to an empty state.
+     */
+    public void clear() {
+        mapGrid.clear();
+        entitiesList.clear();
     }
 }

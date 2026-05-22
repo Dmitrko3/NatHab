@@ -1,7 +1,7 @@
 package ecosystem.behaviors;
 
-import ecosystem.core.Environment;
-import ecosystem.entities.animals.Animal;
+import ecosystem.core.*;
+import ecosystem.entities.animals.*;
 
 /**
  * Movement behavior for animals.

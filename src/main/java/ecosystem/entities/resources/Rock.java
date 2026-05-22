@@ -1,6 +1,6 @@
 package ecosystem.entities.resources;
 
-import ecosystem.core.Position;
+import ecosystem.core.*;
 
 /**
  * A rock on the grid.

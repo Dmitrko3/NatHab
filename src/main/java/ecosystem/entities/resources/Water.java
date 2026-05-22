@@ -1,7 +1,7 @@
 package ecosystem.entities.resources;
 
-import ecosystem.core.Position;
-import ecosystem.interfaces.Consumable;
+import ecosystem.core.*;
+import ecosystem.interfaces.*;
 /**
  * A water source on the grid.
  *

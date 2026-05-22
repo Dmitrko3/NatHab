@@ -1,7 +1,7 @@
 package ecosystem.interfaces;
 
-import ecosystem.core.Environment;
-import ecosystem.entities.AbstractEntity;
+import ecosystem.core.*;
+import ecosystem.entities.*;
 
 import java.util.List;
 

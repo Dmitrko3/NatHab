@@ -1,8 +1,7 @@
 package ecosystem.behaviors;
 
-import ecosystem.core.Environment;
-import ecosystem.core.Position;
-import ecosystem.entities.animals.Animal;
+import ecosystem.core.*;
+import ecosystem.entities.animals.*;
 
 import java.util.Random;
 

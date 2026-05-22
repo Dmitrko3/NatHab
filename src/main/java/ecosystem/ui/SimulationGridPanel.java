@@ -1,10 +1,8 @@
 package ecosystem.ui;
 
-import ecosystem.core.Environment;
-import ecosystem.core.Position;
-import ecosystem.core.SimulationListener;
-import ecosystem.entities.AbstractEntity;
-import ecosystem.ui.AssetManager;
+import ecosystem.core.*;
+import ecosystem.entities.*;
+import ecosystem.ui.*;
 import java.awt.Image;
 import java.util.HashMap;
 import java.util.Map;
@@ -215,7 +213,10 @@ public class SimulationGridPanel extends JPanel implements SimulationListener {
      */
     @Override
     public void onSimulationUpdated(Environment environment) {
-        if (selectedEntity != null && selectedEntity.isAlive()) {
+        // Ensure the selected entity is still present in the environment before
+        // continuing to display it. If it's been removed/cleared, drop selection.
+        if (selectedEntity != null && selectedEntity.isAlive()
+                && environment.getEntitiesList().contains(selectedEntity)) {
             infoPanel.displayEntity(selectedEntity);
         } else if (selectedEntity != null) {
             selectedEntity = null;

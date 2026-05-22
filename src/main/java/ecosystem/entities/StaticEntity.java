@@ -1,6 +1,6 @@
 package ecosystem.entities;
 
-import ecosystem.core.Position;
+import ecosystem.core.*;
 
 /**
  * An entity that does not change over time.

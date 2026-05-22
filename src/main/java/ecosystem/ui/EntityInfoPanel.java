@@ -1,7 +1,6 @@
 package ecosystem.ui;
 
-import ecosystem.entities.AbstractEntity;
-import ecosystem.entities.LivingEntity;
+import ecosystem.entities.*;
 
 import javax.swing.BorderFactory;
 import javax.swing.JLabel;

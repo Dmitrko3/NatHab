@@ -1,6 +1,6 @@
 package ecosystem.interfaces;
 
-import ecosystem.core.Environment;
+import ecosystem.core.*;
 
 /**
  * Contract for entities that can create offspring in the environment.
