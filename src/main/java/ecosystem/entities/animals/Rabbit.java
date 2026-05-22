@@ -18,7 +18,7 @@ import java.util.Random;
  * and can create new rabbits when they have enough energy.
  */
 public class Rabbit extends Animal implements EdibleByCarnivore, Reproducible {
-    private static final double BABY_STARTING_ENERGY = 20.0;
+    private static final double BABY_STARTING_ENERGY = 30.0;
 
     private static final Random RANDOM = new Random();
 
