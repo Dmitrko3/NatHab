@@ -9,10 +9,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Runs the simulation one step at a time.
- *
- * <p>During each step, living entities act, dead entities are removed,
- * and the world is shown.
+ * Runs the simulation step-by-step, updating entities and the environment.
  */
 public class SimulationEngine {
 
@@ -20,41 +17,60 @@ public class SimulationEngine {
     private final List<SimulationListener> listeners;
     private int tickCount;
 
+    /**
+     * Creates a new simulation engine.
+     *
+     * @param environment the ecosystem environment to simulate
+     */
     public SimulationEngine(Environment environment) {
         this.environment = environment;
         this.listeners = new ArrayList<>();
-        this.tickCount   = 0;
+        this.tickCount = 0;
     }
 
-    // -------------------------------------------------------------------------
-    // Public API
-    // -------------------------------------------------------------------------
-
-    /** Register a listener to be notified when the simulation updates. */
-    public void addSimulationListener(SimulationListener listener) {
-        if (listener != null) {
-            listeners.add(listener);
-        }
+    /**
+     * Adds a listener to watch the simulation.
+     *
+     * @param listener the listener to add
+     * @return true if added successfully, false if the listener is null
+     */
+    public boolean addSimulationListener(SimulationListener listener) {
+        if (listener == null) return false;
+        listeners.add(listener);
+        return true;
     }
 
-    /** Remove a previously registered simulation listener. */
-    public void removeSimulationListener(SimulationListener listener) {
-        listeners.remove(listener);
+    /**
+     * Removes a listener from the simulation.
+     *
+     * @param listener the listener to remove
+     * @return true if the listener was found and removed
+     */
+    public boolean removeSimulationListener(SimulationListener listener) {
+        return listeners.remove(listener);
     }
 
-    /** Advance the simulation by one tick. */
-    public void tick() {
+    /**
+     * Moves the simulation forward by one step.
+     *
+     * @return true if all listeners were updated successfully
+     */
+    public boolean tick() {
         tickCount++;
 
-        // --- 1. Act phase (snapshot prevents ConcurrentModificationException) ---
+        // 1. Act phase
         List<AbstractEntity> snapshot = new ArrayList<>(environment.getEntitiesList());
         for (AbstractEntity entity : snapshot) {
             if (entity instanceof Actable && entity.isAlive()) {
-                ((Actable) entity).act(environment);
+                try {
+                    ((Actable) entity).act(environment);
+                } catch (Exception ex) {
+                    // Ignore errors to keep the simulation running
+                }
             }
         }
 
-        // --- 2. Cleanup phase ---
+        // 2. Cleanup phase
         List<AbstractEntity> dead = new ArrayList<>();
         for (AbstractEntity entity : environment.getEntitiesList()) {
             if (!entity.isAlive()) {
@@ -65,49 +81,64 @@ public class SimulationEngine {
             environment.removeEntity(entity);
         }
 
-        // --- 3. Render phase ---
+        // 3. Render phase
         printMap();
         printStats();
 
-        // --- 4. Notify observers ---
-        notifySimulationListeners();
+        // 4. Notify observers
+        return notifySimulationListeners();
     }
 
+    /**
+     * Gets the current step number.
+     *
+     * @return the number of elapsed ticks
+     */
     public int getTickCount() { return tickCount; }
 
     /**
-     * Resets the simulation engine state (tick counter) and notifies listeners
-     * so the UI can refresh (for example after clearing the environment).
+     * Restarts the tick counter and broadcasts the initial state.
+     *
+     * @return true if all listeners were updated successfully
      */
-    public void reset() {
+    public boolean reset() {
         this.tickCount = 0;
-        notifySimulationListeners();
+        return notifySimulationListeners();
     }
 
     /**
-     * Publishes the current world state to listeners without advancing the simulation.
-     * Useful when external code modifies the environment and wants the UI to refresh.
+     * Sends the current state to listeners without advancing time.
+     *
+     * @return true if all listeners were updated successfully
      */
-    public void publishUpdate() {
-        notifySimulationListeners();
+    public boolean publishUpdate() {
+        return notifySimulationListeners();
     }
 
-    // -------------------------------------------------------------------------
-    // Private observer helpers
-    // -------------------------------------------------------------------------
-
-    private void notifySimulationListeners() {
+    /**
+     * Tells all listeners that the simulation has updated.
+     *
+     * @return true if no listener threw an exception and all returned success
+     */
+    private boolean notifySimulationListeners() {
+        boolean allOk = true;
         for (SimulationListener listener : listeners) {
-            listener.onSimulationUpdated(environment);
+            try {
+                boolean ok = listener.onSimulationUpdated(environment);
+                if (!ok) allOk = false;
+            } catch (Exception ex) {
+                allOk = false;
+            }
         }
+        return allOk;
     }
 
-    // -------------------------------------------------------------------------
-    // Private rendering helpers
-    // -------------------------------------------------------------------------
-
-    private void printMap() {
-        // Build a character grid, defaulting every cell to '.'
+    /**
+     * Draws the current map grid in the console.
+     *
+     * @return true upon successful rendering
+     */
+    private boolean printMap() {
         char[][] grid = new char[Environment.HEIGHT][Environment.WIDTH];
         for (int row = 0; row < Environment.HEIGHT; row++) {
             java.util.Arrays.fill(grid[row], '.');
@@ -132,9 +163,15 @@ public class SimulationEngine {
         }
         sb.append("+").append("-".repeat(Environment.WIDTH)).append("+");
         System.out.println(sb);
+        return true;
     }
 
-    private void printStats() {
+    /**
+     * Prints the number of living animals and plants.
+     *
+     * @return true upon successful printing
+     */
+    private boolean printStats() {
         List<AbstractEntity> all = environment.getEntitiesList();
 
         long totalAlive = all.stream().filter(AbstractEntity::isAlive).count();
@@ -147,5 +184,6 @@ public class SimulationEngine {
 
         System.out.printf("Stats: total_alive=%-4d | animals=%-4d | plants=%-4d%n",
                 totalAlive, animals, plants);
+        return true;
     }
 }

@@ -8,8 +8,6 @@ import java.awt.BorderLayout;
 
 /**
  * Main application window for the ecosystem simulation GUI.
- * This frame acts as the master container for all sub-panels,
- * such as the simulation grid, controls, stats, and entity selection.
  */
 public class MainFrame extends JFrame implements SimulationListener {
 
@@ -19,6 +17,12 @@ public class MainFrame extends JFrame implements SimulationListener {
     private ControlPanel controlPanel;
     private EntityInfoPanel infoPanel;
 
+    /**
+     * Creates the main window.
+     *
+     * @param controller the simulation controller
+     * @param environment the ecosystem environment
+     */
     public MainFrame(SimulationController controller, Environment environment) {
         this.controller = controller;
         this.environment = environment;
@@ -29,7 +33,7 @@ public class MainFrame extends JFrame implements SimulationListener {
     }
 
     /**
-     * Sets up the basic JFrame settings.
+     * Sets up the basic window settings.
      */
     private void initializeFrame() {
         setTitle("Ecosystem Simulation");
@@ -49,7 +53,7 @@ public class MainFrame extends JFrame implements SimulationListener {
     }
 
     /**
-     * Places all sub-panels into the main BorderLayout.
+     * Places panels into the window layout.
      */
     private void layoutPanels() {
         add(simulationPanel, BorderLayout.CENTER);
@@ -58,18 +62,20 @@ public class MainFrame extends JFrame implements SimulationListener {
     }
 
     /**
-     * Opens the main application window.
+     * Opens the window.
      */
     public void showWindow() {
         setVisible(true);
     }
 
     /**
-     * Called by SimulationEngine after each tick.
-     * Updates the GUI from the latest model state and repaints the view.
+     * Updates the GUI after each simulation step.
+     *
+     * @param environment the updated environment
+     * @return true when handled successfully
      */
     @Override
-    public void onSimulationUpdated(Environment environment) {
+    public boolean onSimulationUpdated(Environment environment) {
         this.environment = environment;
 
         SwingUtilities.invokeLater(() -> {
@@ -77,20 +83,41 @@ public class MainFrame extends JFrame implements SimulationListener {
             infoPanel.repaint();
             repaint();
         });
+        return true;
     }
 
+    /**
+     * Gets the controller.
+     *
+     * @return the simulation controller
+     */
     public SimulationController getController() {
         return controller;
     }
 
+    /**
+     * Gets the grid panel.
+     *
+     * @return the simulation grid panel
+     */
     public SimulationGridPanel getSimulationPanel() {
         return simulationPanel;
     }
 
+    /**
+     * Gets the info panel.
+     *
+     * @return the entity info panel
+     */
     public EntityInfoPanel getInfoPanel() {
         return infoPanel;
     }
 
+    /**
+     * Gets the control panel.
+     *
+     * @return the simulation control panel
+     */
     public ControlPanel getControlPanel() {
         return controlPanel;
     }

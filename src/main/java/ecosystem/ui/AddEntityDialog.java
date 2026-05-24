@@ -21,8 +21,6 @@ import java.awt.GridLayout;
 
 /**
  * Dialog window for adding a new entity to the simulation.
- *
- * Includes validation for entity type, coordinates, and starting energy.
  */
 public class AddEntityDialog extends JDialog {
 
@@ -36,6 +34,12 @@ public class AddEntityDialog extends JDialog {
     private JButton addButton;
     private JButton cancelButton;
 
+    /**
+     * Creates a dialog for adding a new entity.
+     *
+     * @param owner the parent window
+     * @param controller the simulation controller
+     */
     public AddEntityDialog(JFrame owner, SimulationController controller) {
         super(owner, "Add Entity", true);
         this.controller = controller;
@@ -49,11 +53,20 @@ public class AddEntityDialog extends JDialog {
         setLocationRelativeTo(owner);
     }
 
-    private void initializeDialog() {
+    /**
+     * Configures basic dialog properties.
+     *
+     * @return true upon successful setup
+     */
+    private boolean initializeDialog() {
         setDefaultCloseOperation(DISPOSE_ON_CLOSE);
         setLayout(new BorderLayout());
+        return true;
     }
 
+    /**
+     * Creates the input fields and buttons.
+     */
     private void initializeComponents() {
         entityTypeBox = new JComboBox<>(new String[] {
                 "Lion",
@@ -73,6 +86,9 @@ public class AddEntityDialog extends JDialog {
         cancelButton = new JButton("Cancel");
     }
 
+    /**
+     * Arranges the UI components in the dialog.
+     */
     private void layoutComponents() {
         JPanel inputPanel = new JPanel(new GridLayout(4, 2, 8, 8));
         inputPanel.setBorder(BorderFactory.createEmptyBorder(12, 12, 12, 12));
@@ -97,12 +113,23 @@ public class AddEntityDialog extends JDialog {
         add(buttonPanel, BorderLayout.SOUTH);
     }
 
-    private void wireButtonActions() {
+    /**
+     * Connects the buttons to their actions.
+     *
+     * @return true upon successful connection
+     */
+    private boolean wireButtonActions() {
         addButton.addActionListener(event -> handleAddEntity());
         cancelButton.addActionListener(event -> dispose());
+        return true;
     }
 
-    private void handleAddEntity() {
+    /**
+     * Validates inputs and attempts to add the new entity.
+     *
+     * @return true if the entity was added successfully, false otherwise
+     */
+    private boolean handleAddEntity() {
         try {
             String entityType = (String) entityTypeBox.getSelectedItem();
 
@@ -113,7 +140,7 @@ public class AddEntityDialog extends JDialog {
                 showValidationError("Coordinates must be inside the grid.\n"
                         + "X must be between 0 and " + (Environment.WIDTH - 1) + ".\n"
                         + "Y must be between 0 and " + (Environment.HEIGHT - 1) + ".");
-                return;
+                return false;
             }
 
             Position position = new Position(x, y);
@@ -121,23 +148,46 @@ public class AddEntityDialog extends JDialog {
 
             applyStartingEnergyIfNeeded(entity);
 
-            controller.addNewEntity(entity);
-            dispose();
+            boolean added = controller.addNewEntity(entity);
+            if (added) {
+                dispose();
+                return true;
+            } else {
+                showValidationError("Could not add entity at the specified position.");
+                return false;
+            }
 
         } catch (NumberFormatException exception) {
             showValidationError("Please enter valid numbers for coordinates and energy.");
+            return false;
         } catch (IllegalArgumentException exception) {
             showValidationError(exception.getMessage());
+            return false;
         } catch (Exception exception) {
             showValidationError("Could not add entity: " + exception.getMessage());
+            return false;
         }
     }
 
+    /**
+     * Checks if the coordinates are within the environment bounds.
+     *
+     * @param x the x coordinate
+     * @param y the y coordinate
+     * @return true if valid, false otherwise
+     */
     private boolean isValidCoordinate(int x, int y) {
         return x >= 0 && x < Environment.WIDTH
                 && y >= 0 && y < Environment.HEIGHT;
     }
 
+    /**
+     * Creates an entity based on the selected type.
+     *
+     * @param entityType the entity type name
+     * @param position the starting coordinates
+     * @return the newly created entity
+     */
     private AbstractEntity createEntity(String entityType, Position position) {
         if ("Lion".equals(entityType)) {
             return new Lion(position);
@@ -164,6 +214,11 @@ public class AddEntityDialog extends JDialog {
         throw new IllegalArgumentException("Unknown entity type selected.");
     }
 
+    /**
+     * Sets the starting energy for living entities if provided.
+     *
+     * @param entity the entity to modify
+     */
     private void applyStartingEnergyIfNeeded(AbstractEntity entity) {
         String energyText = energyField.getText().trim();
 
@@ -189,12 +244,19 @@ public class AddEntityDialog extends JDialog {
         }
     }
 
-    private void showValidationError(String message) {
+    /**
+     * Displays an error message popup.
+     *
+     * @param message the error message to display
+     * @return always returns false
+     */
+    private boolean showValidationError(String message) {
         JOptionPane.showMessageDialog(
                 this,
                 message,
                 "Invalid Input",
                 JOptionPane.ERROR_MESSAGE
         );
+        return false;
     }
 }

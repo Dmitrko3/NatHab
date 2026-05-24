@@ -2,7 +2,7 @@ package ecosystem.ui;
 
 import ecosystem.core.*;
 import ecosystem.entities.*;
-import ecosystem.ui.*;
+
 import java.awt.Image;
 import java.util.HashMap;
 import java.util.Map;
@@ -18,10 +18,7 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 
 /**
- * Custom panel responsible for drawing the simulation map.
- *
- * It dynamically reads the grid size from Environment.WIDTH and Environment.HEIGHT,
- * so the GUI always matches the model's actual dimensions.
+ * Custom panel that draws the simulation map and entities.
  */
 public class SimulationGridPanel extends JPanel implements SimulationListener {
 
@@ -34,6 +31,12 @@ public class SimulationGridPanel extends JPanel implements SimulationListener {
     private AbstractEntity selectedEntity;
     private final Map<Class<?>, Image> iconCache = new HashMap<>();
 
+    /**
+     * Creates the grid panel for the simulation.
+     *
+     * @param environment the ecosystem environment
+     * @param infoPanel the panel displaying entity details
+     */
     public SimulationGridPanel(Environment environment, EntityInfoPanel infoPanel) {
         this.environment = environment;
         this.infoPanel = infoPanel;
@@ -47,6 +50,9 @@ public class SimulationGridPanel extends JPanel implements SimulationListener {
         initializeMouseListeners();
     }
 
+    /**
+     * Sets up mouse interactions for tooltips and selection.
+     */
     private void initializeMouseListeners() {
         addMouseMotionListener(new MouseAdapter() {
             @Override
@@ -82,7 +88,12 @@ public class SimulationGridPanel extends JPanel implements SimulationListener {
         });
     }
 
-
+    /**
+     * Converts mouse pixel coordinates to grid coordinates.
+     *
+     * @param event the mouse event
+     * @return the grid position, or null if out of bounds
+     */
     private Position getPositionFromMouseEvent(MouseEvent event) {
         int gridX = event.getX() / CELL_SIZE;
         int gridY = event.getY() / CELL_SIZE;
@@ -94,6 +105,12 @@ public class SimulationGridPanel extends JPanel implements SimulationListener {
         return new Position(gridX, gridY);
     }
 
+    /**
+     * Retrieves the entity at the given position.
+     *
+     * @param position the grid position
+     * @return the entity, or null if empty
+     */
     private AbstractEntity getEntityAt(Position position) {
         if (position == null) {
             return null;
@@ -102,6 +119,11 @@ public class SimulationGridPanel extends JPanel implements SimulationListener {
         return environment.getMapGrid().get(position);
     }
 
+    /**
+     * Paints the grid, entities, and selection highlight.
+     *
+     * @param g the graphics context
+     */
     @Override
     protected void paintComponent(Graphics g) {
         super.paintComponent(g);
@@ -112,7 +134,9 @@ public class SimulationGridPanel extends JPanel implements SimulationListener {
     }
 
     /**
-     * Draws the grid using the exact width and height from Environment.
+     * Draws the grid lines based on environment dimensions.
+     *
+     * @param g the graphics context
      */
     private void drawGrid(Graphics g) {
         g.setColor(Color.LIGHT_GRAY);
@@ -129,7 +153,9 @@ public class SimulationGridPanel extends JPanel implements SimulationListener {
     }
 
     /**
-     * Draws each living entity inside its grid cell.
+     * Draws icons or text symbols for all living entities.
+     *
+     * @param g the graphics context
      */
     private void drawEntities(Graphics g) {
         g.setFont(new Font("Arial", Font.BOLD, 18));
@@ -145,27 +171,22 @@ public class SimulationGridPanel extends JPanel implements SimulationListener {
             int cellX = position.getX() * CELL_SIZE;
             int cellY = position.getY() * CELL_SIZE;
 
-            // Try to draw an icon named after the entity class: e.g. Lion.png, Rabbit.png
             Image img = iconCache.get(entity.getClass());
             if (img == null) {
                 try {
-                    // Resource path: package path where icons reside
                     String resourcePath = "ecosystem/ui/icons/" + entity.getClass().getSimpleName() + ".png";
                     img = AssetManager.getInstance().getIcon(resourcePath).getImage()
                             .getScaledInstance(CELL_SIZE - 4, CELL_SIZE - 4, Image.SCALE_SMOOTH);
                     iconCache.put(entity.getClass(), img);
                 } catch (IllegalArgumentException ex) {
-                    // Icon not found — cache a null marker to avoid repeated lookups
                     iconCache.put(entity.getClass(), null);
                     img = null;
                 }
             }
 
             if (img != null) {
-                // Draw image centered with a small margin
                 g.drawImage(img, cellX + 2, cellY + 2, CELL_SIZE - 4, CELL_SIZE - 4, null);
             } else {
-                // Fallback: draw symbol letter as before
                 String symbol = String.valueOf(entity.getSymbol());
                 int textX = cellX + (CELL_SIZE - metrics.stringWidth(symbol)) / 2;
                 int textY = cellY + ((CELL_SIZE - metrics.getHeight()) / 2) + metrics.getAscent();
@@ -177,7 +198,9 @@ public class SimulationGridPanel extends JPanel implements SimulationListener {
     }
 
     /**
-     * Draws a visual highlight around the selected cell.
+     * Highlights the currently selected grid cell.
+     *
+     * @param g the graphics context
      */
     private void drawSelectedCell(Graphics g) {
         Position highlightPosition = getCurrentSelectedPosition();
@@ -198,6 +221,11 @@ public class SimulationGridPanel extends JPanel implements SimulationListener {
         g2.dispose();
     }
 
+    /**
+     * Determines which cell should be highlighted.
+     *
+     * @return the position to highlight, or null if none
+     */
     private Position getCurrentSelectedPosition() {
         if (selectedEntity != null && selectedEntity.isAlive()) {
             return selectedEntity.getPosition();
@@ -206,15 +234,14 @@ public class SimulationGridPanel extends JPanel implements SimulationListener {
         return selectedPosition;
     }
 
-
     /**
-     * Called by SimulationEngine whenever the simulation updates.
-     * Repaints the grid so the GUI shows the latest state.
+     * Updates the grid display when the simulation changes.
+     *
+     * @param environment the updated environment
+     * @return true if updated successfully
      */
     @Override
-    public void onSimulationUpdated(Environment environment) {
-        // Ensure the selected entity is still present in the environment before
-        // continuing to display it. If it's been removed/cleared, drop selection.
+    public boolean onSimulationUpdated(Environment environment) {
         if (selectedEntity != null && selectedEntity.isAlive()
                 && environment.getEntitiesList().contains(selectedEntity)) {
             infoPanel.displayEntity(selectedEntity);
@@ -224,5 +251,6 @@ public class SimulationGridPanel extends JPanel implements SimulationListener {
         }
 
         repaint();
+        return true;
     }
 }

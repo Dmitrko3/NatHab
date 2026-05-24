@@ -30,9 +30,9 @@ public class Environment {
     // -------------------------------------------------------------------------
     // Spatial helpers
     // -------------------------------------------------------------------------
-
     /**
-     * Returns {@code true} if the position is inside the grid and the cell is free.
+     * Checks if a position is free.
+     * @return true if in-bounds and empty (or occupant is dead).
      */
     public boolean isPositionFree(Position pos) {
         if (pos.getX() < 0 || pos.getX() >= WIDTH
@@ -45,7 +45,10 @@ public class Environment {
     }
 
     /**
-     * Returns all living entities that are close to the given position.
+     * Returns a list of living entities within a 2-tile radius of the given position.
+     *
+     * @param pos The central position.
+     * @return List of nearby entities.
      */
     public List<AbstractEntity> getNearbyEntities(Position pos) {
         List<AbstractEntity> nearby = new ArrayList<>();
@@ -88,15 +91,34 @@ public class Environment {
         return entitiesList.remove(entity);
     }
 
-    /**
-     * Updates the entity's position in the map after it moves.
-     */
-    public void updateEntityPosition(AbstractEntity entity,
-                                     Position oldPos, Position newPos) {
-        mapGrid.remove(oldPos);
+    /** Updates the entity's position in the map after it moves.
+     *@return true if the environment was updated successfully, false otherwise*/
+    public boolean updateEntityPosition(AbstractEntity entity,
+                                        Position oldPos, Position newPos) {
+        if (entity == null || oldPos == null || newPos == null) return false;
+        // If the old position mapping does not point to this entity, be defensive:
+        AbstractEntity current = mapGrid.get(oldPos);
+        if (current != null && current != entity) {
+            // Someone else occupies oldPos; do not remove them.
+            // Only allow placing into newPos if it's free.
+            if (!isPositionFree(newPos)) return false;
+        }
+
+        // Remove oldPos only if it maps to this entity (avoid removing other occupants)
+        mapGrid.remove(oldPos, entity);
         mapGrid.put(newPos, entity);
+        return true;
     }
 
+    /** * Clears the world of all entities.
+     * * @return true if the environment was not already empty.
+     */
+    public boolean clear() {
+        boolean hadEntries = !mapGrid.isEmpty() || !entitiesList.isEmpty();
+        mapGrid.clear();
+        entitiesList.clear();
+        return hadEntries;
+    }
     // -------------------------------------------------------------------------
     // Accessors
     // -------------------------------------------------------------------------
@@ -111,12 +133,4 @@ public class Environment {
         return Collections.unmodifiableMap(mapGrid);
     }
 
-    /**
-     * Clears the world, removing all entities and freeing all cells.
-     * Useful for resetting the simulation to an empty state.
-     */
-    public void clear() {
-        mapGrid.clear();
-        entitiesList.clear();
-    }
 }

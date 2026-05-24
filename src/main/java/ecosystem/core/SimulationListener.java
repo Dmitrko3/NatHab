@@ -1,14 +1,15 @@
 package ecosystem.core;
 
 /**
- * Observer interface for receiving updates when the simulation state changes.
+ * Listens for simulation state changes.
  */
 public interface SimulationListener {
 
     /**
-     * Called when the simulation state changes, such as at the end of a tick.
+     * Called after each simulation step.
      *
-     * @param environment the current simulation environment
+     * @param environment the current environment
+     * @return true if handled successfully
      */
-    void onSimulationUpdated(Environment environment);
+    boolean onSimulationUpdated(Environment environment);
 }

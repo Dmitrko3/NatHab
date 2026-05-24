@@ -1,3 +1,6 @@
+/*Dmitry Kornilov-322220609
+  Igal Chertok -322832163
+ * */
 package ecosystem;
 
 import ecosystem.controller.SimulationController;
@@ -56,12 +59,12 @@ public class Main {
             // ---- Herbivores ----
             env.addEntity(new Deer(new Position(5,  5)));
             env.addEntity(new Deer(new Position(14, 14)));
-
+/**
             env.addEntity(new Rabbit(new Position(6,  7)));
             env.addEntity(new Rabbit(new Position(11, 11)));
             env.addEntity(new Rabbit(new Position(3,  12)));
             env.addEntity(new Rabbit(new Position(16, 3)));
-
+**/
             // ---- Carnivore ----
             env.addEntity(new Lion(new Position(10, 5)));
             env.addEntity(new Lion(new Position(11, 7)));
@@ -70,7 +73,7 @@ public class Main {
             SimulationController controller = new SimulationController(engine, env);
             MainFrame frame = new MainFrame(controller, env);
 
-            engine.addSimulationListener(frame);
+            boolean added = engine.addSimulationListener(frame);
             engine.addSimulationListener(frame.getSimulationPanel());
 
             frame.showWindow();

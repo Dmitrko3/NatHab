@@ -9,10 +9,8 @@ import ecosystem.entities.resources.*;
 import javax.swing.Timer;
 
 /**
- * Controller layer between the GUI and the simulation model.
- *
- * The GUI should call this class instead of directly controlling
- * the SimulationEngine or Environment.
+ Controller for the GUI to interact with the simulation.
+ Hides the SimulationEngine and Environment from the UI.
  */
 public class SimulationController {
 
@@ -20,53 +18,63 @@ public class SimulationController {
     private final Environment environment;
 
     private Timer runTimer;
-
+    /**
+     * Constructs the controller.
+     * @param engine The main simulation engine.
+     * @param environment The environment model.
+     */
     public SimulationController(SimulationEngine engine, Environment environment) {
         this.engine = engine;
         this.environment = environment;
     }
 
     /**
-     * Executes exactly one simulation tick.
-     * Useful for a "Step" or "Next Tick" GUI button.
+     * Executes a single simulation step.
+     * @return true if the tick and listener updates succeed.
      */
-    public void executeSingleTick() {
-        engine.tick();
+    public boolean executeSingleTick() {
+        return engine.tick();
     }
 
     /**
-     * Starts running the simulation continuously using a Swing timer.
+     * Starts the continuous simulation timer.
      *
-     * @param delayMillis time between ticks in milliseconds
+     * @param delayMillis Milliseconds between ticks.
+     * @return true if started, false if already running.
      */
-    public void startContinuousRun(int delayMillis) {
+    public boolean startContinuousRun(int delayMillis) {
         if (runTimer != null && runTimer.isRunning()) {
-            return;
+            return false;
         }
 
         runTimer = new Timer(delayMillis, event -> engine.tick());
         runTimer.start();
+        return true;
     }
 
     /**
      * Stops the continuous simulation run.
+     *
+     * @return true if a running timer was stopped, false if there was not running.
      */
-    public void stopContinuousRun() {
+    public boolean stopContinuousRun() {
         if (runTimer != null) {
             runTimer.stop();
             runTimer = null;
+            return true;
         }
+        return false;
     }
 
     /**
      * Adds a new entity to the simulation world.
      *
      * @param entity the entity to add
+     * @return true if successfull
      */
-    public void addNewEntity(AbstractEntity entity) {
-        if (entity != null) {
-            environment.addEntity(entity);
-        }
+    public boolean addNewEntity(AbstractEntity entity) {
+        if (entity == null) return false;
+        return environment.addEntity(entity);
     }
 
     /**
@@ -88,25 +96,28 @@ public class SimulationController {
     }
 
     /**
-     * Resets the whole simulation: stops any running timer, clears the environment
-     * and resets the engine state so the UI shows an empty map.
+     * Fully resets the simulation, stopping the timer and clearing the environment.
+     *
+     * @return true if successfully reset and listeners were notified.
      */
-    public void resetSimulation() {
-        stopContinuousRun();
-        environment.clear();
-        engine.reset();
-        // Re-seed the environment with the original starting entities so
-        // running after reset will produce activity (reproduction, movement, etc.)
-        seedInitialWorld();
-        // Notify listeners so the UI shows the newly seeded map
-        engine.publishUpdate();
+    public boolean resetSimulation() {
+        boolean stopped = stopContinuousRun();
+        boolean cleared = environment.clear();
+        boolean resetOk = engine.reset();
+        // Re-seed the environment with the original starting entities so running after reset will produce activity
+        boolean seeded = seedInitialWorld();
+        // Notify listeners so the UI shows the newly seeded map (engine.reset already did notify; we ensure publish/update)
+        boolean published = engine.publishUpdate();
+        // Aggregate: consider success if engine listeners succeeded (resetOk/published) and clearing/seed didn't crash
+        return resetOk && published;
     }
 
     /**
-     * Place the default initial entities into the world (same layout as startup).
-     * Attempts to add each entity; if a position is occupied it's skipped.
+     * Populates the world with the default startup layout, skipping occupied positions.
+     *
+     * @return true when the seeding process finishes.
      */
-    private void seedInitialWorld() {
+    private boolean seedInitialWorld() {
         // ---- Static resources ----
         environment.addEntity(new Rock(new ecosystem.core.Position(3, 3)));
         environment.addEntity(new Rock(new ecosystem.core.Position(4, 3)));
@@ -139,5 +150,6 @@ public class SimulationController {
 
         // ---- Carnivore ----
         environment.addEntity(new Lion(new ecosystem.core.Position(10, 5)));
+        return true;
     }
 }

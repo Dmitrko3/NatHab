@@ -6,8 +6,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * Singleton resource manager responsible for loading image assets once
- * and reusing them throughout the GUI.
+ * Singleton manager that loads and caches image assets.
  */
 public class AssetManager {
 
@@ -19,26 +18,34 @@ public class AssetManager {
         this.iconCache = new HashMap<>();
     }
 
+    /**
+     * Gets the single instance of the AssetManager.
+     *
+     * @return the singleton instance
+     */
     public static AssetManager getInstance() {
         return INSTANCE;
     }
 
+    /**
+     * Retrieves an icon from the cache or loads it from the file system/classpath.
+     *
+     * @param path the resource path of the image
+     * @return the loaded image icon
+     * @throws IllegalArgumentException if the image cannot be found
+     */
     public ImageIcon getIcon(String path) {
         if (!iconCache.containsKey(path)) {
-            // Try classpath first (expected location for packaged resources)
             URL imageUrl = getClass().getClassLoader().getResource(path);
 
             if (imageUrl != null) {
                 iconCache.put(path, new ImageIcon(imageUrl));
             } else {
-                // Fallback 1: try looking under a top-level "icons/" directory on the classpath
                 String filename = path.contains("/") ? path.substring(path.lastIndexOf('/') + 1) : path;
                 URL alt = getClass().getClassLoader().getResource("icons/" + filename);
                 if (alt != null) {
                     iconCache.put(path, new ImageIcon(alt));
                 } else {
-                    // Fallback 2: attempt to load from the source tree when running from IDE
-                    // (project root)/src/icons/<filename>
                     try {
                         java.io.File f = new java.io.File(System.getProperty("user.dir"), "src/icons/" + filename);
                         if (f.exists()) {
@@ -56,7 +63,14 @@ public class AssetManager {
         return iconCache.get(path);
     }
 
-    public void clearCache() {
+    /**
+     * Empties the image cache.
+     *
+     * @return true if the cache contained items before clearing, false otherwise
+     */
+    public boolean clearCache() {
+        boolean hadEntries = !iconCache.isEmpty();
         iconCache.clear();
+        return hadEntries;
     }
 }
