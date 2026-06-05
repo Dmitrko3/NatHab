@@ -73,8 +73,8 @@ public class Main {
             SimulationController controller = new SimulationController(engine, env);
             MainFrame frame = new MainFrame(controller, env);
 
-            boolean added = engine.addSimulationListener(frame);
-            engine.addSimulationListener(frame.getSimulationPanel());
+            engine.addSimulationListener(new ecosystem.ui.SwingSimulationListenerAdapter(frame));
+            engine.addSimulationListener(new ecosystem.ui.SwingSimulationListenerAdapter(frame.getSimulationPanel()));
 
             frame.showWindow();
         });
