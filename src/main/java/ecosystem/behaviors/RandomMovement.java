@@ -16,30 +16,30 @@ public class RandomMovement implements MovementStrategy {
     private static final Random RANDOM = new Random();
     private static final int[][] OFFSETS = {{0,1},{0,-1},{1,0},{-1,0}};
 
-    @Override
-    public boolean move(Animal animal, Environment environment) {
-        int[] order = shuffledIndices();
-        for (int idx : order) {
-            Position candidate = new Position(
-                    animal.getPosition().getX() + OFFSETS[idx][0],
-                    animal.getPosition().getY() + OFFSETS[idx][1]);
-            if (environment.isPositionFree(candidate)) {
-                applyMove(animal, environment, candidate);
-                return true;
-            }
-        }
-        return false;
+@Override
+public boolean move(Animal animal, Environment environment) {
+    int[] order = shuffledIndices();
+    for (int idx : order) {
+        Position candidate = new Position(
+                animal.getPosition().getX() + OFFSETS[idx][0],
+                animal.getPosition().getY() + OFFSETS[idx][1]);
+        // Attempt an atomic move with a short timeout
+        boolean moved = environment.tryMoveEntity(animal, candidate, 50);
+        if (moved) return true;
     }
+    return false;
+}
 
-    // -------------------------------------------------------------------------
-    // Shared helper used by subclasses
-    // -------------------------------------------------------------------------
-
-    static void applyMove(Animal animal, Environment environment, Position newPos) {
-        Position oldPos = animal.getPosition();
-        animal.setPosition(newPos);
-        environment.updateEntityPosition(animal, oldPos, newPos);
+/**
+ * Legacy helper kept for compatibility — delegates to environment.tryMoveEntity.
+ */
+static boolean applyMove(Animal animal, Environment environment, Position newPos) {
+    if (environment.isPositionFree(newPos)) {
+        boolean ok = RandomMovement.applyMove(animal, environment, newPos);
+        return ok;
     }
+    return false;
+}
 
     // -------------------------------------------------------------------------
     // Private

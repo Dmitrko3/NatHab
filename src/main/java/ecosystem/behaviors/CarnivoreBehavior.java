@@ -16,24 +16,37 @@ import java.util.List;
  */
 public class CarnivoreBehavior implements FeedingBehavior {
 
-    @Override
-    public boolean eat(Animal animal, List<AbstractEntity> nearby) {
-        AbstractEntity target = null;
-        int minDist = Integer.MAX_VALUE;
+@Override
+@Override
+public boolean eat(Animal animal, List<AbstractEntity> nearby, ecosystem.core.Environment environment) {
+    AbstractEntity target = null;
+    int minDist = Integer.MAX_VALUE;
 
-        for (AbstractEntity e : nearby) {
-            if (e instanceof Consumable&& ((Consumable) e).isEdibleBy(animal)&& e.isAlive()) {
-                int dist = animal.getPosition().distanceTo(e.getPosition());
-                if (dist < minDist) {
-                    minDist = dist;
-                    target  = e;
-                }
+    for (AbstractEntity e : nearby) {
+        if (e instanceof Consumable
+                && ((Consumable) e).isEdibleBy(animal)
+                && e.isAlive()) {
+            int dist = animal.getPosition().distanceTo(e.getPosition());
+            if (dist < minDist) {
+                minDist = dist;
+                target  = e;
             }
         }
-
-        if (target != null) {
-            return animal.eat((Consumable) target);
-        }
-        return false;
     }
+
+    if (target != null) {
+        boolean locked = environment.tryLockEntity(target, 50);
+        if (!locked) return false;
+        try {
+            if (!target.isAlive()) return false;
+            if (!(target instanceof Consumable)) return false;
+            Consumable consumable = (Consumable) target;
+            if (!consumable.isEdibleBy(animal)) return false;
+            return animal.eat(consumable);
+        } finally {
+            environment.unlockEntity(target);
+        }
+    }
+    return false;
+}
 }

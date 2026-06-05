@@ -3,6 +3,10 @@ package ecosystem.core;
 import ecosystem.entities.*;
 
 import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentMap;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.locks.ReentrantLock;
 
 /**
  * Represents the 2D world where entities live.
@@ -22,9 +26,19 @@ public class Environment {
     /** Flat list of all entities ever added (including dead ones until cleanup). */
     private final List<AbstractEntity> entitiesList;
 
+    // -------------------------------------------------------------------------
+    // Locking (fine-grained)
+    // -------------------------------------------------------------------------
+    // Locks keyed by Position and by entity identity; these allow thread-safe,
+    // fine-grained operations without a global Environment lock.
+    private final ConcurrentMap<Position, ReentrantLock> positionLocks;
+    private final ConcurrentMap<AbstractEntity, ReentrantLock> entityLocks;
+
     public Environment() {
         this.mapGrid       = new HashMap<>();
         this.entitiesList  = new ArrayList<>();
+        this.positionLocks = new ConcurrentHashMap<>();
+        this.entityLocks   = new ConcurrentHashMap<>();
     }
 
     // -------------------------------------------------------------------------
@@ -63,7 +77,7 @@ public class Environment {
     }
 
     // -------------------------------------------------------------------------
-    // Entity management
+    // Entity management (unchanged API)
     // -------------------------------------------------------------------------
 
     /**
@@ -119,6 +133,120 @@ public class Environment {
         entitiesList.clear();
         return hadEntries;
     }
+
+    // -------------------------------------------------------------------------
+    // Fine-grained locking API
+    // -------------------------------------------------------------------------
+
+    private ReentrantLock lockForPosition(Position p) {
+        // computeIfAbsent is safe: equal Positions share map bucket
+        return positionLocks.computeIfAbsent(p, k -> new ReentrantLock());
+    }
+
+    private ReentrantLock lockForEntity(AbstractEntity entity) {
+        return entityLocks.computeIfAbsent(entity, k -> new ReentrantLock());
+    }
+
+    /**
+     * Try to obtain the lock for an entity within the timeout (ms).
+     *
+     * @return true if lock acquired
+     */
+    public boolean tryLockEntity(AbstractEntity entity, long timeoutMillis) {
+        if (entity == null) return false;
+        ReentrantLock lock = lockForEntity(entity);
+        try {
+            return lock.tryLock(timeoutMillis, TimeUnit.MILLISECONDS);
+        } catch (InterruptedException ex) {
+            Thread.currentThread().interrupt();
+            return false;
+        }
+    }
+
+    /**
+     * Unlocks the entity lock (if held by current thread).
+     */
+    public void unlockEntity(AbstractEntity entity) {
+        if (entity == null) return;
+        ReentrantLock lock = entityLocks.get(entity);
+        if (lock != null && lock.isHeldByCurrentThread()) {
+            lock.unlock();
+        }
+    }
+
+    /**
+     * Attempt to move entity from its current position to newPos atomically.
+     *
+     * Acquires locks on the two involved positions (old and new) in a deterministic
+     * order, validates current map state, performs the update and releases locks.
+     *
+     * @param entity       the entity performing the move
+     * @param newPos       the destination position
+     * @param timeoutMillis how long to wait to acquire both locks
+     * @return true on success, false if locks couldn't be acquired or validation failed
+     */
+    public boolean tryMoveEntity(AbstractEntity entity, Position newPos, long timeoutMillis) {
+        if (entity == null || newPos == null) return false;
+
+        Position oldPos = entity.getPosition();
+        if (oldPos.equals(newPos)) return true; // no-op move
+
+        // Determine canonical lock order to avoid deadlocks: compare by x then y.
+        Position first = oldPos;
+        Position second = newPos;
+        if (comparePositions(first, second) > 0) {
+            Position tmp = first; first = second; second = tmp;
+        }
+
+        ReentrantLock lock1 = lockForPosition(first);
+        ReentrantLock lock2 = lockForPosition(second);
+
+        boolean locked1 = false;
+        boolean locked2 = false;
+
+        long deadline = System.currentTimeMillis() + timeoutMillis;
+        try {
+            // Try lock first
+            long timeLeft = Math.max(0, deadline - System.currentTimeMillis());
+            locked1 = lock1.tryLock(timeLeft, TimeUnit.MILLISECONDS);
+            if (!locked1) return false;
+
+            // Try lock second with remaining time
+            timeLeft = Math.max(0, deadline - System.currentTimeMillis());
+            locked2 = lock2.tryLock(timeLeft, TimeUnit.MILLISECONDS);
+            if (!locked2) return false;
+
+            // Validate state: oldPos should be mapped to this entity (or absent).
+            AbstractEntity currentAtOld = mapGrid.get(oldPos);
+            if (currentAtOld != null && currentAtOld != entity) {
+                // Someone else occupies oldpos — cannot move
+                return false;
+            }
+            // Validate newPos is free (empty or occupant dead)
+            AbstractEntity currentAtNew = mapGrid.get(newPos);
+            if (currentAtNew != null && currentAtNew.isAlive()) {
+                return false;
+            }
+
+            // All good, perform the move
+            mapGrid.remove(oldPos, entity);
+            mapGrid.put(newPos, entity);
+            entity.setPosition(newPos);
+            return true;
+        } catch (InterruptedException ex) {
+            Thread.currentThread().interrupt();
+            return false;
+        } finally {
+            if (locked2 && lock2.isHeldByCurrentThread()) lock2.unlock();
+            if (locked1 && lock1.isHeldByCurrentThread()) lock1.unlock();
+        }
+    }
+
+    private int comparePositions(Position a, Position b) {
+        if (a.getX() != b.getX()) return Integer.compare(a.getX(), b.getX());
+        return Integer.compare(a.getY(), b.getY());
+    }
+
     // -------------------------------------------------------------------------
     // Accessors
     // -------------------------------------------------------------------------
@@ -132,5 +260,4 @@ public class Environment {
     public Map<Position, AbstractEntity> getMapGrid() {
         return Collections.unmodifiableMap(mapGrid);
     }
-
 }

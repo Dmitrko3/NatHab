@@ -2,39 +2,23 @@ package ecosystem.behaviors;
 
 import ecosystem.entities.*;
 import ecosystem.entities.animals.*;
-import ecosystem.interfaces.*;
+import ecosystem.core.Environment;
 
 import java.util.List;
 
 /**
- * Feeding behavior for herbivores.
+ * Feeding behavior for animals.
  *
- * <p>Looks through nearby entities and finds the closest living thing
- * that a herbivore can eat. If one is found, the animal eats it.
- *
- * <p>Used by {@link ecosystem.entities.animals.Deer} and
- * {@link ecosystem.entities.animals.Rabbit}.
+ * <p>Uses the nearby entities to choose what the animal should try to eat.
  */
-public class HerbivoreBehavior implements FeedingBehavior {
-
-    @Override
-    public boolean eat(Animal animal, List<AbstractEntity> nearby) {
-        AbstractEntity target = null;
-        int minDist = Integer.MAX_VALUE;
-
-        for (AbstractEntity e : nearby) {
-            if (e instanceof Consumable&& ((Consumable) e).isEdibleBy(animal)&& e.isAlive()) {
-                int dist = animal.getPosition().distanceTo(e.getPosition());
-                if (dist < minDist) {
-                    minDist = dist;
-                    target  = e;
-                }
-            }
-        }
-
-        if (target != null) {
-            return animal.eat((Consumable) target);
-        }
-        return false;
-    }
+public interface FeedingBehavior {
+    /**
+     * Tries to eat the best available target nearby.
+     *
+     * @param animal the animal that is eating
+     * @param nearby nearby entities the animal can see
+     * @param environment the environment (used for locking / validation)
+     * @return {@code true} if the animal ate something
+     */
+    boolean eat(Animal animal, List<AbstractEntity> nearby, Environment environment);
 }

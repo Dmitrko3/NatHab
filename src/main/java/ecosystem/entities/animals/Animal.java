@@ -47,7 +47,7 @@ public abstract class Animal extends LivingEntity
 
         List<AbstractEntity> nearby = sense(environment);   // sense before moving
         movementStrategy.move(this, environment);           // move
-        feedingBehavior.eat(this, nearby);   // eat (pre-move snapshot)
+        feedingBehavior.eat(this, nearby, environment);     // eat (pre-move snapshot)
         return true;
     }
 
