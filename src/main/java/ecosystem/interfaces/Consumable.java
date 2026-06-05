@@ -15,5 +15,5 @@ public interface Consumable {
      * Called when this entity is consumed.  Implementations decide whether
      * the entity dies, replenishes itself, etc.
      */
-    void onConsumed();
+    boolean onConsumed();
 }

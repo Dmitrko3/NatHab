@@ -11,5 +11,5 @@ public interface Actable {
      *
      * @param environment the shared world the entity lives in
      */
-    void act(Environment environment);
+    boolean act(Environment environment);
 }

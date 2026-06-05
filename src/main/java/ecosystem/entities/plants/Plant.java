@@ -34,11 +34,12 @@ public abstract class Plant extends LivingEntity
     // -------------------------------------------------------------------------
 
     @Override
-    public void act(Environment environment) {
+    public boolean act(Environment environment) {
         age++;
         energy = Math.min(maxEnergy, energy + growthRate);
         // Plants don't call super.act(), so energy never drops to 0 from aging.
         reproduce(environment);
+        return true;
     }
 
     // -------------------------------------------------------------------------
@@ -53,8 +54,9 @@ public abstract class Plant extends LivingEntity
 
     /** Being eaten kills the plant. */
     @Override
-    public void onConsumed() {
+    public boolean onConsumed() {
         alive = false;
+        return true;
     }
 
     // -------------------------------------------------------------------------

@@ -63,9 +63,13 @@ public class SimulationEngine {
         for (AbstractEntity entity : snapshot) {
             if (entity instanceof Actable && entity.isAlive()) {
                 try {
-                    ((Actable) entity).act(environment);
+                    boolean ok = ((Actable) entity).act(environment);
+                    if (!ok) {
+                        System.err.println("Warning: entity " + entity + " act() returned false");
+                    }
                 } catch (Exception ex) {
                     // Ignore errors to keep the simulation running
+                    System.err.println("entity.act() threw: " + ex.getMessage());
                 }
             }
         }
@@ -175,10 +179,10 @@ public class SimulationEngine {
         List<AbstractEntity> all = environment.getEntitiesList();
 
         long totalAlive = all.stream().filter(AbstractEntity::isAlive).count();
-        long animals    = all.stream()
+        long animals= all.stream()
                 .filter(e -> e instanceof Animal && e.isAlive())
                 .count();
-        long plants     = all.stream()
+        long plants= all.stream()
                 .filter(e -> e instanceof Plant && e.isAlive())
                 .count();
 

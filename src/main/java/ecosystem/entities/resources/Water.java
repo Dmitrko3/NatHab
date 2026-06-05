@@ -20,8 +20,9 @@ public class Water extends Resource implements Consumable {
 
     /** Consuming water does not remove it from the grid. */
     @Override
-    public void onConsumed() {
+    public boolean onConsumed() {
         // intentionally empty
+        return true;
     }
 
     @Override

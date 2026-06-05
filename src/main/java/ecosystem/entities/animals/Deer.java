@@ -29,13 +29,14 @@ public class Deer extends Animal implements EdibleByCarnivore {
     // -------------------------------------------------------------------------
 
     @Override
-    public void act(Environment environment) {
+    public boolean act(Environment environment) {
         super.act(environment);         // move + eat (plus energy drain / aging)
-        if (!alive) return;
+        if (!alive) return false;
 
         if (energy > 60 && RANDOM.nextDouble() <= 0.45) {
             reproduce(environment);
         }
+        return true;
     }
 
     // -------------------------------------------------------------------------

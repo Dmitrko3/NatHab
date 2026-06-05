@@ -41,13 +41,14 @@ public abstract class Animal extends LivingEntity
     // -------------------------------------------------------------------------
 
     @Override
-    public void act(Environment environment) {
+    public boolean act(Environment environment) {
         super.act(environment);        // age++, energy -= 2, maybe die
-        if (!alive) return;
+        if (!alive) return false;
 
         List<AbstractEntity> nearby = sense(environment);   // sense before moving
         movementStrategy.move(this, environment);           // move
-        feedingBehavior.eat(this, nearby);                  // eat (pre-move snapshot)
+        feedingBehavior.eat(this, nearby);   // eat (pre-move snapshot)
+        return true;
     }
 
     // -------------------------------------------------------------------------
@@ -70,8 +71,8 @@ public abstract class Animal extends LivingEntity
     public boolean eat(Consumable target) {
         if (target == null) return false;
         double gain = target.getNutritionValue();   // read value before state changes
-        target.onConsumed();
-        setEnergy(energy + gain);
+        if(target.onConsumed())
+            setEnergy(energy + gain);
         return true;
     }
 
@@ -96,8 +97,9 @@ public abstract class Animal extends LivingEntity
 
     /** Kills this animal when it is eaten. */
     @Override
-    public void onConsumed() {
+    public boolean onConsumed() {
         alive = false;
+        return true;
     }
 
     // -------------------------------------------------------------------------

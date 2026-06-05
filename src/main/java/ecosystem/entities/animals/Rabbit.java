@@ -38,13 +38,14 @@ public class Rabbit extends Animal implements EdibleByCarnivore, Reproducible {
     // -------------------------------------------------------------------------
 
     @Override
-    public void act(Environment environment) {
+    public boolean act(Environment environment) {
         super.act(environment);         // move + eat (plus energy drain / aging)
-        if (!alive) return;
+        if (!alive) return false;
 
         if (energy > 30 && RANDOM.nextDouble() <= 0.30) {
             reproduce(environment);
         }
+        return true;
     }
 
     // -------------------------------------------------------------------------
