@@ -51,42 +51,42 @@ public class ChaseMovement implements MovementStrategy {
      * reduces Manhattan distance the most.
      */
     private boolean moveToward(Animal animal, Environment environment, Position goal) {
-        Position cur = animal.getPosition();
-        int dx = Integer.signum(goal.getX() - cur.getX());
-        int dy = Integer.signum(goal.getY() - cur.getY());
+    Position cur = animal.getPosition();
+    int dx = Integer.signum(goal.getX() - cur.getX());
+    int dy = Integer.signum(goal.getY() - cur.getY());
 
-        // Priority: horizontal/vertical toward goal first, then sideways, then back
-        Position[] candidates = {
-            new Position(cur.getX() + dx, cur.getY()),
-            new Position(cur.getX(),       cur.getY() + dy),
-            new Position(cur.getX() - dy,  cur.getY() + dx), // perpendicular
-            new Position(cur.getX() + dy,  cur.getY() - dx)  // perpendicular
-        };
+    Position[] candidates = {
+        new Position(cur.getX() + dx, cur.getY()),
+        new Position(cur.getX(),cur.getY() + dy),
+        new Position(cur.getX() - dy,cur.getY() + dx),
+        new Position(cur.getX() + dy,cur.getY() - dx)
+    };
 
-        for (Position candidate : candidates) {
-            if (environment.isPositionFree(candidate)) {
-                RandomMovement.applyMove(animal, environment, candidate);
-                return true;
-            }
+    for (Position candidate : candidates) {
+        if (environment.isPositionFree(candidate)) {
+            // Create action and submit instead of direct move
+            SimulationAction moveAction = new ecosystem.core.MoveAction(animal, candidate, 50);
+            boolean queued = environment.submitAction(moveAction);
+
+            return queued;
         }
-        return randomFallback(animal, environment);
     }
+    return randomFallback(animal, environment);
+}
 
     private boolean randomFallback(Animal animal, Environment environment) {
         int[] order = {0, 1, 2, 3};
         for (int i = 3; i > 0; i--) {
             int j = RANDOM.nextInt(i + 1);
-            int tmp = order[i]; order[i] = order[j]; order[j] = tmp;
-        }
+            int tmp = order[i]; order[i] = order[j]; order[j] = tmp;}
         for (int idx : order) {
-            Position candidate = new Position(
-                    animal.getPosition().getX() + OFFSETS[idx][0],
-                    animal.getPosition().getY() + OFFSETS[idx][1]);
-            if (environment.isPositionFree(candidate)) {
-                RandomMovement.applyMove(animal, environment, candidate);
-                return true;
-            }
+            Position candidate = new Position(animal.getPosition().getX() + OFFSETS[idx][0],animal.getPosition().getY() + OFFSETS[idx][1]);
+        if (environment.isPositionFree(candidate)) {
+            // Create action and submit instead of direct move
+            SimulationAction moveAction = new ecosystem.core.MoveAction(animal, candidate, 50);
+            return environment.submitAction(moveAction);
         }
-        return false;
     }
+    return false;
+}
 }

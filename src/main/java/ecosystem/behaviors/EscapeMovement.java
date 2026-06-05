@@ -75,8 +75,11 @@ public class EscapeMovement implements MovementStrategy {
 
         for (Position candidate : candidates) {
             if (environment.isPositionFree(candidate)) {
-                RandomMovement.applyMove(animal, environment, candidate);
-                return true;
+                // Create action and submit instead of direct move
+                SimulationAction moveAction = new ecosystem.core.MoveAction(animal, candidate, 50);
+                boolean queued = environment.submitAction(moveAction);
+
+                return queued;
             }
         }
         return randomFallback(animal, environment);
@@ -93,8 +96,9 @@ public class EscapeMovement implements MovementStrategy {
                     animal.getPosition().getX() + OFFSETS[idx][0],
                     animal.getPosition().getY() + OFFSETS[idx][1]);
             if (environment.isPositionFree(candidate)) {
-                RandomMovement.applyMove(animal, environment, candidate);
-                return true;
+                // Create action and submit instead of direct move
+                SimulationAction moveAction = new ecosystem.core.MoveAction(animal, candidate, 50);
+                return environment.submitAction(moveAction);
             }
         }
         return false;

@@ -7,7 +7,8 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.locks.ReentrantLock;
-
+import java.util.concurrent.BlockingQueue;
+import java.util.concurrent.LinkedBlockingQueue;
 /**
  * Represents the 2D world where entities live.
  *
@@ -35,6 +36,9 @@ public class Environment {
     private final ConcurrentMap<AbstractEntity, ReentrantLock> entityLocks;
     // A shared monitor for resource availability notifications (animals wait on this)
     private final Object resourceMonitor = new Object();
+    // Command queue to which entities can submit actions.
+    // The SimulationEngine will drain and execute actions sequentially.
+    private final BlockingQueue<SimulationAction> actionQueue = new LinkedBlockingQueue<>();
     public Environment() {
         this.mapGrid       = new HashMap<>();
         this.entitiesList  = new ArrayList<>();
@@ -80,7 +84,6 @@ public class Environment {
     // -------------------------------------------------------------------------
     // Entity management (unchanged API)
     // -------------------------------------------------------------------------
-
     /**
      * Adds an entity to the world.
      *
@@ -100,7 +103,6 @@ public class Environment {
         }
         return true;
     }
-
     /**
      * Adds an entity to the world.
      *
@@ -248,8 +250,34 @@ public class Environment {
             if (locked2 && lock2.isHeldByCurrentThread()) lock2.unlock();
             if (locked1 && lock1.isHeldByCurrentThread()) lock1.unlock();
         }
-    }
 
+    }
+    /**
+ * Submit an action to be executed by the engine thread.
+ * Non-blocking: returns immediately whether action was accepted.
+ * Called by entity threads from any location.
+ */
+    public boolean submitAction(SimulationAction action) {
+        if (action == null) return false;
+        return actionQueue.offer(action);  // Non-blocking offer
+}
+
+/**
+ * Drain all pending actions from the queue and execute them sequentially.
+ * Called ONLY by the engine thread at a deterministic point in tick().
+ */
+public void drainAndExecuteActions() {
+    SimulationAction action;
+    while ((action = actionQueue.poll()) != null) {
+        try {
+            action.execute(this);
+        } catch (Exception ex) {
+            System.err.println("Action execution error: " + ex.getMessage());
+            ex.printStackTrace();
+            // Continue processing remaining actions
+        }
+    }
+}
     private int comparePositions(Position a, Position b) {
         if (a.getX() != b.getX()) return Integer.compare(a.getX(), b.getX());
         return Integer.compare(a.getY(), b.getY());

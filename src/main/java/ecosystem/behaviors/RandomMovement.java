@@ -23,9 +23,16 @@ public boolean move(Animal animal, Environment environment) {
         Position candidate = new Position(
                 animal.getPosition().getX() + OFFSETS[idx][0],
                 animal.getPosition().getY() + OFFSETS[idx][1]);
-        // Attempt an atomic move with a short timeout
-        boolean moved = environment.tryMoveEntity(animal, candidate, 50);
-        if (moved) return true;
+
+        // Check if candidate is free (optimistic read, no locks needed)
+        if (environment.isPositionFree(candidate)) {
+            // Create action and submit instead of direct move
+            SimulationAction moveAction = new ecosystem.core.MoveAction(animal, candidate, 50);
+            boolean queued = environment.submitAction(moveAction);
+
+            // Return true if action was submitted
+            return queued;
+        }
     }
     return false;
 }

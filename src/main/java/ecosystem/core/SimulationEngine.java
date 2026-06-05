@@ -57,6 +57,7 @@ public class SimulationEngine {
      */
     public boolean tick() {
         tickCount++;
+        environment.drainAndExecuteActions();
 
         // 1. Act phase
         List<AbstractEntity> snapshot = new ArrayList<>(environment.getEntitiesList());
