@@ -28,8 +28,12 @@ public class EscapeMovement implements MovementStrategy {
         // Identify threatening animals (predators) — alive animals that are NOT prey
         List<Animal> predators = new ArrayList<>();
         for (AbstractEntity e : nearby) {
-            if (e instanceof Animal && !(e instanceof EdibleByCarnivore) && e.isAlive()) {
-                predators.add((Animal) e);
+            if (e instanceof Animal && e.isAlive()) {
+                // if 'animal' (this one trying to escape) is consumable by the neighbor,
+                // then its a threat/predator
+                if (animal instanceof Consumable && ((Consumable) animal).isEdibleBy((ecosystem.interfaces.Eater) e)) {
+                    predators.add((Animal) e);
+                }
             }
         }
 

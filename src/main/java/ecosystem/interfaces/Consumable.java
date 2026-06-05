@@ -16,4 +16,12 @@ public interface Consumable {
      * the entity dies, replenishes itself, etc.
      */
     boolean onConsumed();
+    /**
+     * Checks whether the given consumer can eat this object.
+     *
+     * @param consumer the eater attempting to consume this object
+     * @return true if the consumer can eat this object, otherwise false
+     */
+    boolean isEdibleBy(Eater consumer);
+
 }

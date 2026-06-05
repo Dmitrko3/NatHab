@@ -25,6 +25,12 @@ public class Water extends Resource implements Consumable {
         return true;
     }
 
+    /** All eaters can consume water (drinking) for energy. */
+    @Override
+    public boolean isEdibleBy(ecosystem.interfaces.Eater consumer) {
+        return consumer != null; // or more refined logic if you want
+    }
+
     @Override
     public String toString() {
         return "Water " + position;

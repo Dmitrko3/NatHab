@@ -58,7 +58,16 @@ public abstract class Plant extends LivingEntity
         alive = false;
         return true;
     }
-
+    /**
+     * Plants are edible by herbivores (consumers whose feeding behavior is HerbivoreBehavior).
+     */
+    @Override
+    public boolean isEdibleBy(ecosystem.interfaces.Eater consumer) {
+        if (consumer == null) return false;
+        if (!(consumer instanceof ecosystem.entities.animals.Animal)) return false;
+        return ((ecosystem.entities.animals.Animal) consumer)
+                .getFeedingBehavior() instanceof ecosystem.behaviors.HerbivoreBehavior;
+    }
     // -------------------------------------------------------------------------
     // Accessors
     // -------------------------------------------------------------------------

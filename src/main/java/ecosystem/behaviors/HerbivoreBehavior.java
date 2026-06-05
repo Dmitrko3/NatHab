@@ -23,9 +23,7 @@ public class HerbivoreBehavior implements FeedingBehavior {
         int minDist = Integer.MAX_VALUE;
 
         for (AbstractEntity e : nearby) {
-            if (e instanceof EdibleByHerbivore
-                    && e instanceof Consumable
-                    && e.isAlive()) {
+            if (e instanceof Consumable&& ((Consumable) e).isEdibleBy(animal)&& e.isAlive()) {
                 int dist = animal.getPosition().distanceTo(e.getPosition());
                 if (dist < minDist) {
                     minDist = dist;

@@ -27,7 +27,7 @@ public class ChaseMovement implements MovementStrategy {
         AbstractEntity target = null;
         int minDist = Integer.MAX_VALUE;
         for (AbstractEntity e : nearby) {
-            if (e instanceof EdibleByCarnivore && e.isAlive()) {
+            if (e instanceof Consumable&& ((Consumable) e).isEdibleBy(animal) && e.isAlive()) {
                 int dist = animal.getPosition().distanceTo(e.getPosition());
                 if (dist < minDist) {
                     minDist = dist;
