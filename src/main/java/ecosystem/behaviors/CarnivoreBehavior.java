@@ -1,41 +1,60 @@
 package ecosystem.behaviors;
 
 import ecosystem.entities.*;
-import ecosystem.entities.animals.*;
-import ecosystem.interfaces.*;
+import ecosystem.entities.animals.Animal;
+import ecosystem.core.Environment;
+import ecosystem.interfaces.Consumable;
 
 import java.util.List;
 
-/**
- * Feeding behavior for carnivores.
- *
- * <p>Looks through the nearby entities and finds the closest living entity
- * that a carnivore can eat. If a valid target is found, the animal eats it.
- *
- * <p>Used by {@link ecosystem.entities.animals.Lion}.
- */
 public class CarnivoreBehavior implements FeedingBehavior {
-
-@Override
-@Override
-public boolean eat(Animal animal, List<AbstractEntity> nearby, ecosystem.core.Environment environment) {
-    AbstractEntity target = null;
-    int minDist = Integer.MAX_VALUE;
-
-    for (AbstractEntity e : nearby) {
-        if (e instanceof Consumable
-                && ((Consumable) e).isEdibleBy(animal)
-                && e.isAlive()) {
-            int dist = animal.getPosition().distanceTo(e.getPosition());
-            if (dist < minDist) {
-                minDist = dist;
-                target  = e;
-            }
+    private static final long WAIT_TIMEOUT_MS = 300;
+    private static final long LOCK_TIMEOUT_MS = 50;
+    @Override
+    public boolean eat(Animal animal, List<AbstractEntity> nearby, Environment environment) {
+        AbstractEntity target = findTarget(animal, nearby);
+        if (target != null) {
+            return tryConsume(animal, target, environment);
         }
+
+        // Wait for a newly-added resource (prey) and re-check once.
+        Object monitor = environment.getResourceMonitor();
+        try {
+            synchronized (monitor) {
+                monitor.wait(WAIT_TIMEOUT_MS);
+            }
+        } catch (InterruptedException ex) {
+            Thread.currentThread().interrupt();
+            return false;
+        }
+
+        List<AbstractEntity> refreshed = environment.getNearbyEntities(animal.getPosition());
+        target = findTarget(animal, refreshed);
+        if (target != null) {
+            return tryConsume(animal, target, environment);
+        }
+        return false;
     }
 
-    if (target != null) {
-        boolean locked = environment.tryLockEntity(target, 50);
+    private AbstractEntity findTarget(Animal animal, List<AbstractEntity> nearby) {
+        AbstractEntity best = null;
+        int minDist = Integer.MAX_VALUE;
+        if (nearby == null) return null;
+        for (AbstractEntity e : nearby) {
+            if (e == null || !e.isAlive()) continue;
+            if (e instanceof Consumable && ((Consumable) e).isEdibleBy(animal)) {
+                int d = animal.getPosition().distanceTo(e.getPosition());
+                if (d < minDist) {
+                    minDist = d;
+                    best = e;
+                }
+            }
+        }
+        return best;
+    }
+
+    private boolean tryConsume(Animal animal, AbstractEntity target, Environment environment) {
+        boolean locked = environment.tryLockEntity(target, LOCK_TIMEOUT_MS);
         if (!locked) return false;
         try {
             if (!target.isAlive()) return false;
@@ -47,6 +66,4 @@ public boolean eat(Animal animal, List<AbstractEntity> nearby, ecosystem.core.En
             environment.unlockEntity(target);
         }
     }
-    return false;
-}
 }

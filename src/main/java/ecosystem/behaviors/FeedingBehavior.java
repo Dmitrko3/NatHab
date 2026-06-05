@@ -2,7 +2,7 @@ package ecosystem.behaviors;
 
 import ecosystem.entities.*;
 import ecosystem.entities.animals.*;
-
+import ecosystem.core.Environment;
 import java.util.List;
 
 /**
@@ -18,5 +18,5 @@ public interface FeedingBehavior {
      * @param nearby nearby entities the animal can see
      * @return {@code true} if the animal ate something
      */
-    boolean eat(Animal animal, java.util.List<AbstractEntity> nearby);
+    boolean eat(Animal animal, List<AbstractEntity> nearby, Environment environment);
 }

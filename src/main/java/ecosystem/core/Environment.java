@@ -33,7 +33,8 @@ public class Environment {
     // fine-grained operations without a global Environment lock.
     private final ConcurrentMap<Position, ReentrantLock> positionLocks;
     private final ConcurrentMap<AbstractEntity, ReentrantLock> entityLocks;
-
+    // A shared monitor for resource availability notifications (animals wait on this)
+    private final Object resourceMonitor = new Object();
     public Environment() {
         this.mapGrid       = new HashMap<>();
         this.entitiesList  = new ArrayList<>();
@@ -90,6 +91,13 @@ public class Environment {
         if (!isPositionFree(entity.getPosition())) return false;
         mapGrid.put(entity.getPosition(), entity);
         entitiesList.add(entity);
+
+        // If the new entity is a consumable and alive, notify any waiting animals
+        if (entity instanceof ecosystem.interfaces.Consumable && entity.isAlive()) {
+            synchronized (resourceMonitor) {
+                resourceMonitor.notifyAll();
+            }
+        }
         return true;
     }
 
@@ -259,5 +267,9 @@ public class Environment {
     /** Returns a read-only view of the spatial map. */
     public Map<Position, AbstractEntity> getMapGrid() {
         return Collections.unmodifiableMap(mapGrid);
+    }
+    /** Returns the monitor object animals can wait on for new resources. */
+    public Object getResourceMonitor() {
+        return resourceMonitor;
     }
 }
