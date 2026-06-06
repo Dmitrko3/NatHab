@@ -1,6 +1,10 @@
 package ecosystem.entities.resources;
 
 import ecosystem.core.*;
+import ecosystem.entities.AbstractEntity;
+import ecosystem.entities.animals.Animal;
+
+import java.util.List;
 
 /**
  * A rock on the grid.
@@ -21,5 +25,10 @@ public class Rock extends Resource {
     @Override
     public String toString() {
         return "Rock " + position;
+    }
+
+    @Override
+    public boolean eat(Animal animal, List<AbstractEntity> nearby, Environment environment) {
+        return false;
     }
 }

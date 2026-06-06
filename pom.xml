@@ -19,8 +19,7 @@
     <build>
         <resources>
             <resource>
-                <directory>src/icons</directory>
-            </resource>
+                <directory>src/img</directory> </resource>
         </resources>
         <plugins>
             <plugin>

@@ -2,7 +2,10 @@ package ecosystem.entities.plants;
 
 import ecosystem.core.Environment;
 import ecosystem.core.Position;
+import ecosystem.entities.AbstractEntity;
+import ecosystem.entities.animals.Animal;
 
+import java.util.List;
 import java.util.Random;
 
 /**
@@ -38,6 +41,11 @@ public class Tree extends Plant {
                 return environment.addEntity(new Tree(candidate));
             }
         }
+        return false;
+    }
+
+    @Override
+    public boolean eat(Animal animal, List<AbstractEntity> nearby, Environment environment) {
         return false;
     }
 }

@@ -42,12 +42,15 @@ public class AssetManager {
                 iconCache.put(path, new ImageIcon(imageUrl));
             } else {
                 String filename = path.contains("/") ? path.substring(path.lastIndexOf('/') + 1) : path;
-                URL alt = getClass().getClassLoader().getResource("icons/" + filename);
+
+                // Updated to look in the "img/" directory instead of "icons/"
+                URL alt = getClass().getClassLoader().getResource("img/" + filename);
                 if (alt != null) {
                     iconCache.put(path, new ImageIcon(alt));
                 } else {
                     try {
-                        java.io.File f = new java.io.File(System.getProperty("user.dir"), "src/icons/" + filename);
+                        // Updated to look in the "src/img/" directory instead of "src/icons/"
+                        java.io.File f = new java.io.File(System.getProperty("user.dir"), "src/img/" + filename);
                         if (f.exists()) {
                             iconCache.put(path, new ImageIcon(f.getAbsolutePath()));
                         } else {

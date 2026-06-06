@@ -5,9 +5,11 @@ import ecosystem.behaviors.FeedingBehavior;
 import ecosystem.behaviors.RandomMovement;
 import ecosystem.core.Environment;
 import ecosystem.core.Position;
+import ecosystem.entities.AbstractEntity;
 import ecosystem.interfaces.EdibleByCarnivore;
 import ecosystem.interfaces.Reproducible;
 
+import java.util.List;
 import java.util.Random;
 
 
@@ -70,5 +72,10 @@ public class Rabbit extends Animal implements EdibleByCarnivore, Reproducible {
             }
         }
         return false;   // all adjacent cells occupied
+    }
+
+    @Override
+    public boolean eat(Animal animal, List<AbstractEntity> nearby, Environment environment) {
+        return false;
     }
 }

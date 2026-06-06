@@ -2,6 +2,8 @@ package ecosystem.entities.plants;
 
 import ecosystem.core.Environment;
 import ecosystem.core.Position;
+import ecosystem.entities.AbstractEntity;
+import ecosystem.entities.animals.Animal;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -59,5 +61,10 @@ public class Flower extends Plant {
             }
         }
         return spawned > 0;
+    }
+
+    @Override
+    public boolean eat(Animal animal, List<AbstractEntity> nearby, Environment environment) {
+        return false;
     }
 }

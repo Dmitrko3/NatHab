@@ -174,7 +174,7 @@ public class SimulationGridPanel extends JPanel implements SimulationListener {
             Image img = iconCache.get(entity.getClass());
             if (img == null) {
                 try {
-                    String resourcePath = "ecosystem/ui/icons/" + entity.getClass().getSimpleName() + ".png";
+                    String resourcePath = "img/" + entity.getClass().getSimpleName() + ".png";
                     img = AssetManager.getInstance().getIcon(resourcePath).getImage()
                             .getScaledInstance(CELL_SIZE - 4, CELL_SIZE - 4, Image.SCALE_SMOOTH);
                     iconCache.put(entity.getClass(), img);

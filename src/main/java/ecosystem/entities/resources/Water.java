@@ -1,7 +1,12 @@
 package ecosystem.entities.resources;
 
 import ecosystem.core.*;
+import ecosystem.entities.AbstractEntity;
+import ecosystem.entities.animals.Animal;
 import ecosystem.interfaces.*;
+
+import java.util.List;
+
 /**
  * A water source on the grid.
  *
@@ -34,5 +39,10 @@ public class Water extends Resource implements Consumable {
     @Override
     public String toString() {
         return "Water " + position;
+    }
+
+    @Override
+    public boolean eat(Animal animal, List<AbstractEntity> nearby, Environment environment) {
+        return false;
     }
 }

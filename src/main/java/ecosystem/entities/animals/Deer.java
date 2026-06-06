@@ -5,8 +5,10 @@ import ecosystem.behaviors.HerbivoreBehavior;
 import ecosystem.behaviors.RandomMovement;
 import ecosystem.core.Environment;
 import ecosystem.core.Position;
+import ecosystem.entities.AbstractEntity;
 import ecosystem.interfaces.EdibleByCarnivore;
 
+import java.util.List;
 import java.util.Random;
 /**
  * A deer on the grid.
@@ -60,5 +62,10 @@ public class Deer extends Animal implements EdibleByCarnivore {
             }
         }
         return false;   // all adjacent cells occupied
+    }
+
+    @Override
+    public boolean eat(Animal animal, List<AbstractEntity> nearby, Environment environment) {
+        return false;
     }
 }
