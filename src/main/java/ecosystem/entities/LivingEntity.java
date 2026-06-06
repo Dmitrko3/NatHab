@@ -68,22 +68,24 @@ public abstract class LivingEntity extends AbstractEntity implements Actable, Ru
                 Thread.sleep(delay);
 
                 try {
-                    // perform one tick of behavior
+                    // Perform one tick of behavior
                     act(runEnvironment);
                 } catch (Exception ex) {
-                    System.err.println("Entity " + this + " act() failed: " + ex.getMessage());
+                    // Loudly log behavior-specific failures but allow the thread to survive
+                    System.err.println("ERROR: Entity " + this + " act() failed: " + ex.getMessage());
                     ex.printStackTrace();
                 }
 
             } catch (InterruptedException ie) {
-                // Respect interruption as a request to stop
+                // Respect interruption as a legitimate request to stop the thread
                 Thread.currentThread().interrupt();
                 setThreadActive(false);
                 break;
-            } catch (Exception ex) {
-                // Log unexpected thread-level failures and continue (do not silently die)
-                System.err.println("Entity " + this + " thread failure: " + ex.getMessage());
-                ex.printStackTrace();
+            } catch (Throwable t) {
+                // CRITICAL CATCH-ALL: Log unexpected thread-level failures LOUDLY
+                // Catching Throwable ensures even unchecked RuntimeExceptions or Errors don't kill the thread silently.
+                System.err.println("CRITICAL: Entity " + this + " experienced a fatal thread failure: " + t.getMessage());
+                t.printStackTrace();
             }
         }
     }
