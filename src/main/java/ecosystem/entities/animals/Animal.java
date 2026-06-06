@@ -105,12 +105,16 @@ public abstract class Animal extends LivingEntity
      * For now: only consumers that behave as carnivores can eat animals. */
     @Override
     public boolean isEdibleBy(Eater consumer) {
-        if (consumer == null) return false;
-        if (!(consumer instanceof Animal)) return false; // only animals act as eaters today
-        // The consumer decides its feeding style via its feedingBehavior.
-        // If the consumer's feeding behaviour is a CarnivoreBehavior then it can eat animals.
-        return ((Animal) consumer).getFeedingBehavior() instanceof ecosystem.behaviors.CarnivoreBehavior;
+        return consumer != null && consumer.isCarnivore(); // Pure polymorphism!
     }
+    @Override
+    public boolean isAnimal() { return true; }
+
+    @Override
+    public boolean isCarnivore() { return feedingBehavior.isCarnivore(); }
+
+    @Override
+    public boolean isHerbivore() { return feedingBehavior.isHerbivore(); }
     // -------------------------------------------------------------------------
     // Accessors
     // -------------------------------------------------------------------------

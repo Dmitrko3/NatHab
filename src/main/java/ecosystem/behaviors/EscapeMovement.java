@@ -26,19 +26,15 @@ public class EscapeMovement implements MovementStrategy {
         List<AbstractEntity> nearby = environment.getNearbyEntities(animal.getPosition());
 
         // Identify threatening animals (predators) — alive animals that are NOT prey
-        List<Animal> predators = new ArrayList<>();
+        List<AbstractEntity> predators = new ArrayList<>();
         for (AbstractEntity e : nearby) {
-            if (e instanceof Animal && e.isAlive()) {
-                // if 'animal' (this one trying to escape) is consumable by the neighbor,
-                // then its a threat/predator
-                if (animal instanceof Consumable && ((Consumable) animal).isEdibleBy((ecosystem.interfaces.Eater) e)) {
-                    predators.add((Animal) e);
-                }
+            // If the nearby entity is alive and considers ME edible, it's a threat!
+            if (e != null && e.isAlive() && animal.isEdibleBy(e)) {
+                predators.add(e);
             }
         }
-
         if (!predators.isEmpty()) {
-            Animal threat = closestOf(predators, animal.getPosition());
+            AbstractEntity threat = closestOf(predators, animal.getPosition());
             return moveAway(animal, environment, threat.getPosition());
         }
         return randomFallback(animal, environment);
@@ -48,10 +44,10 @@ public class EscapeMovement implements MovementStrategy {
     // Private
     // -------------------------------------------------------------------------
 
-    private static Animal closestOf(List<Animal> animals, Position from) {
-        Animal closest = animals.get(0);
+    private static AbstractEntity closestOf(List<AbstractEntity> animals, Position from) {
+        AbstractEntity closest = animals.get(0);
         int    minDist = from.distanceTo(closest.getPosition());
-        for (Animal a : animals) {
+        for (AbstractEntity a : animals) {
             int d = from.distanceTo(a.getPosition());
             if (d < minDist) { minDist = d; closest = a; }
         }

@@ -62,9 +62,9 @@ public class SimulationEngine {
         // 1. Act phase
         List<AbstractEntity> snapshot = new ArrayList<>(environment.getEntitiesList());
         for (AbstractEntity entity : snapshot) {
-            if (entity instanceof Actable && entity.isAlive()) {
+            if (entity.isAlive()) {
                 try {
-                    boolean ok = ((Actable) entity).act(environment);
+                    boolean ok = entity.act(environment);
                     if (!ok) {
                         System.err.println("Warning: entity " + entity + " act() returned false");
                     }
@@ -180,12 +180,8 @@ public class SimulationEngine {
         List<AbstractEntity> all = environment.getEntitiesList();
 
         long totalAlive = all.stream().filter(AbstractEntity::isAlive).count();
-        long animals= all.stream()
-                .filter(e -> e instanceof Animal && e.isAlive())
-                .count();
-        long plants= all.stream()
-                .filter(e -> e instanceof Plant && e.isAlive())
-                .count();
+        long animals = all.stream().filter(e -> e.isAnimal() && e.isAlive()).count();
+        long plants  = all.stream().filter(e -> e.isPlant() && e.isAlive()).count();
 
         System.out.printf("Stats: total_alive=%-4d | animals=%-4d | plants=%-4d%n",
                 totalAlive, animals, plants);

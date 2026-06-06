@@ -4,6 +4,7 @@ import ecosystem.core.Environment;
 import ecosystem.core.Position;
 import ecosystem.entities.LivingEntity;
 import ecosystem.interfaces.Consumable;
+import ecosystem.interfaces.Eater;
 import ecosystem.interfaces.EdibleByHerbivore;
 import ecosystem.interfaces.Reproducible;
 /**
@@ -62,12 +63,12 @@ public abstract class Plant extends LivingEntity
      * Plants are edible by herbivores (consumers whose feeding behavior is HerbivoreBehavior).
      */
     @Override
-    public boolean isEdibleBy(ecosystem.interfaces.Eater consumer) {
-        if (consumer == null) return false;
-        if (!(consumer instanceof ecosystem.entities.animals.Animal)) return false;
-        return ((ecosystem.entities.animals.Animal) consumer)
-                .getFeedingBehavior() instanceof ecosystem.behaviors.HerbivoreBehavior;
+    public boolean isEdibleBy(Eater consumer) {
+        return consumer != null && consumer.isHerbivore();
     }
+
+    @Override
+    public boolean isPlant() { return true; }
     // -------------------------------------------------------------------------
     // Accessors
     // -------------------------------------------------------------------------

@@ -96,7 +96,7 @@ public class Environment {
         entitiesList.add(entity);
 
         // If the new entity is a consumable and alive, notify any waiting animals
-        if (entity instanceof ecosystem.interfaces.Consumable && entity.isAlive()) {
+        if (entity.isAlive() && entity.getNutritionValue() > 0) {
             synchronized (resourceMonitor) {
                 resourceMonitor.notifyAll();
             }

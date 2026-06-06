@@ -20,12 +20,7 @@ public class EatAction implements SimulationAction {
         // Example: remove target from environment and credit eater energy.
         boolean removed = environment.removeEntity(target);
         if (removed) {
-            // Optionally update eater energy (uses its setter)
-            if (eater instanceof ecosystem.entities.LivingEntity) {
-                // safe cast; adjust energy amount as needed
-                ecosystem.entities.LivingEntity le = (ecosystem.entities.LivingEntity) eater;
-                le.setEnergy(Math.min(le.getMaxEnergy(), le.getEnergy() + 10.0));
-            }
+            eater.addEnergy(10.0); // Completely safe polymorphic call
         }
         return removed;
     }

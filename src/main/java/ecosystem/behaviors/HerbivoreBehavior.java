@@ -40,22 +40,18 @@ public class HerbivoreBehavior implements FeedingBehavior {
         }
         return false;
     }
+    @Override
+    public boolean isHerbivore() { return true; }
 
     private AbstractEntity findTarget(Animal animal, List<AbstractEntity> nearby) {
         AbstractEntity best = null;
         int minDist = Integer.MAX_VALUE;
         if (nearby == null) return null;
         for (AbstractEntity e : nearby) {
-            if (e == null || !e.isAlive()) continue;
-            if (e instanceof EdibleByHerbivore && e instanceof Consumable) {
-                // extra check using Consumable.isEdibleBy to honor any rules
-                if (((Consumable) e).isEdibleBy(animal)) {
-                    int d = animal.getPosition().distanceTo(e.getPosition());
-                    if (d < minDist) {
-                        minDist = d;
-                        best = e;
-                    }
-                }
+            // NO instanceof! Let the entity figure out if it's edible.
+            if (e != null && e.isAlive() && e.isEdibleBy(animal)) {
+                int d = animal.getPosition().distanceTo(e.getPosition());
+                if (d < minDist) { minDist = d; best = e; }
             }
         }
         return best;
@@ -65,13 +61,9 @@ public class HerbivoreBehavior implements FeedingBehavior {
         boolean locked = environment.tryLockEntity(target, LOCK_TIMEOUT_MS);
         if (!locked) return false;
         try {
-            if (!target.isAlive()) return false;
-            if (!(target instanceof Consumable)) return false;
-            Consumable consumable = (Consumable) target;
-            if (!consumable.isEdibleBy(animal)) return false;
-            return animal.eat(consumable);
+            if (!target.isAlive() || !target.isEdibleBy(animal)) return false;
+            return animal.eat(target); // No casting! target is natively a Consumable
         } finally {
             environment.unlockEntity(target);
-        }
-    }
+        }   }
 }

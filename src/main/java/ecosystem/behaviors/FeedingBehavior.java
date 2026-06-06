@@ -19,4 +19,6 @@ public interface FeedingBehavior {
      * @return {@code true} if the animal ate something
      */
     boolean eat(Animal animal, List<AbstractEntity> nearby, Environment environment);
+    default boolean isCarnivore() { return false; }
+    default boolean isHerbivore() { return false; }
 }

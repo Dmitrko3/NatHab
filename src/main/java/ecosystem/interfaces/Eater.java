@@ -11,4 +11,7 @@ public interface Eater {
      * @return {@code true} if eating succeeded
      */
     boolean eat(Consumable target);
+    boolean isCarnivore();
+    boolean isHerbivore();
+    void addEnergy(double amount);
 }

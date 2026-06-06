@@ -35,6 +35,61 @@ public abstract class AbstractEntity {
     public boolean isAlive() { return alive; }
 
     public void setAlive(boolean alive) { this.alive = alive; }
+    public boolean isAnimal() {
+        return false;
+    }
+
+    public boolean isPlant() {
+        return false;
+    }
+
+    // --- Polymorphic Defaults to prevent instanceof & downcasting ---
+    public double getMaxEnergy() {
+        return 0.0;
+    }
+
+    public void setEnergy(double energy) {
+    }
+
+    @Override
+    public double getNutritionValue() {
+        return 0.0;
+    }
+
+    @Override
+    public boolean onConsumed() {
+        return false;
+    }
+
+    @Override
+    public boolean isEdibleBy(Eater consumer) {
+        return false;
+    }
+
+    @Override
+    public boolean eat(Consumable target) {
+        return false;
+    }
+
+    @Override
+    public boolean isCarnivore() {
+        return false;
+    }
+
+    @Override
+    public boolean isHerbivore() {
+        return false;
+    }
+
+    @Override
+    public void addEnergy(double amount) {
+    }
+
+    @Override
+    public boolean act(Environment environment) {
+        return true;
+    }
+
 
     // -------------------------------------------------------------------------
     // Object overrides

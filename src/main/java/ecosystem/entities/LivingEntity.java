@@ -141,4 +141,8 @@ public abstract class LivingEntity extends AbstractEntity implements Actable, Ru
         return String.format("%s %s energy=%.1f age=%d alive=%b",
                 getClass().getSimpleName(), position, energy, age, alive);
     }
+    @Override
+    public void addEnergy(double amount) {
+        setEnergy(Math.min(maxEnergy, energy + amount));
+    }
 }
