@@ -10,6 +10,7 @@ import java.util.List;
 public class CarnivoreBehavior implements FeedingBehavior {
     private static final long WAIT_TIMEOUT_MS = 300;
     private static final long LOCK_TIMEOUT_MS = 50;
+
     @Override
     public boolean eat(Animal animal, List<AbstractEntity> nearby, Environment environment) {
         AbstractEntity target = findTarget(animal, nearby);
@@ -35,8 +36,11 @@ public class CarnivoreBehavior implements FeedingBehavior {
         }
         return false;
     }
+
     @Override
-    public boolean isCarnivore() { return true; } // For HerbivoreBehavior use: isHerbivore() { return true; }
+    public boolean isCarnivore() {
+        return true;
+    } // For HerbivoreBehavior use: isHerbivore() { return true; }
 
     private AbstractEntity findTarget(Animal animal, List<AbstractEntity> nearby) {
         AbstractEntity best = null;
@@ -46,7 +50,10 @@ public class CarnivoreBehavior implements FeedingBehavior {
             // NO instanceof! Let the entity figure out if it's edible.
             if (e != null && e.isAlive() && e.isEdibleBy(animal)) {
                 int d = animal.getPosition().distanceTo(e.getPosition());
-                if (d < minDist) { minDist = d; best = e; }
+                if (d < minDist) {
+                    minDist = d;
+                    best = e;
+                }
             }
         }
         return best;
@@ -56,9 +63,11 @@ public class CarnivoreBehavior implements FeedingBehavior {
         boolean locked = environment.tryLockEntity(target, LOCK_TIMEOUT_MS);
         if (!locked) return false;
         try {
+            // No casting! target natively acts as a Consumable.
             if (!target.isAlive() || !target.isEdibleBy(animal)) return false;
-            return animal.eat(target); // No casting! target is natively a Consumable
+            return animal.eat(target);
         } finally {
             environment.unlockEntity(target);
-        }}
+        }
+    }
 }

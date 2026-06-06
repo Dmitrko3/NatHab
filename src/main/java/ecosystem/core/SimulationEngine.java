@@ -59,23 +59,20 @@ public class SimulationEngine {
         tickCount++;
         environment.drainAndExecuteActions();
 
-        // 1. Act phase
+        // 1. Act phase (No instanceof Actable!)
         List<AbstractEntity> snapshot = new ArrayList<>(environment.getEntitiesList());
         for (AbstractEntity entity : snapshot) {
             if (entity.isAlive()) {
                 try {
                     boolean ok = entity.act(environment);
-                    if (!ok) {
-                        System.err.println("Warning: entity " + entity + " act() returned false");
-                    }
+                    if (!ok) System.err.println("Warning: entity " + entity + " act() returned false");
                 } catch (Exception ex) {
-                    // Ignore errors to keep the simulation running
                     System.err.println("entity.act() threw: " + ex.getMessage());
                 }
             }
         }
 
-        // 2. Cleanup phase
+        // Cleanup phase
         List<AbstractEntity> dead = new ArrayList<>();
         for (AbstractEntity entity : environment.getEntitiesList()) {
             if (!entity.isAlive()) {
@@ -86,11 +83,11 @@ public class SimulationEngine {
             environment.removeEntity(entity);
         }
 
-        // 3. Render phase
+        //Render phase
         printMap();
         printStats();
 
-        // 4. Notify observers
+        //Notify observers
         return notifySimulationListeners();
     }
 
@@ -180,6 +177,7 @@ public class SimulationEngine {
         List<AbstractEntity> all = environment.getEntitiesList();
 
         long totalAlive = all.stream().filter(AbstractEntity::isAlive).count();
+        // Pure polymorphism, no instanceof Animal/Plant
         long animals = all.stream().filter(e -> e.isAnimal() && e.isAlive()).count();
         long plants  = all.stream().filter(e -> e.isPlant() && e.isAlive()).count();
 

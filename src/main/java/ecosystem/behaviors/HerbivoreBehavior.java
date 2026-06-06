@@ -48,7 +48,7 @@ public class HerbivoreBehavior implements FeedingBehavior {
         int minDist = Integer.MAX_VALUE;
         if (nearby == null) return null;
         for (AbstractEntity e : nearby) {
-            // NO instanceof! Let the entity figure out if it's edible.
+            // Replaced the messy instanceof Consumable/EdibleByHerbivore
             if (e != null && e.isAlive() && e.isEdibleBy(animal)) {
                 int d = animal.getPosition().distanceTo(e.getPosition());
                 if (d < minDist) { minDist = d; best = e; }
@@ -62,8 +62,9 @@ public class HerbivoreBehavior implements FeedingBehavior {
         if (!locked) return false;
         try {
             if (!target.isAlive() || !target.isEdibleBy(animal)) return false;
-            return animal.eat(target); // No casting! target is natively a Consumable
+            return animal.eat((Animal)target);
         } finally {
             environment.unlockEntity(target);
-        }   }
+        }
+    }
 }

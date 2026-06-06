@@ -25,14 +25,15 @@ public class EscapeMovement implements MovementStrategy {
     public boolean move(Animal animal, Environment environment) {
         List<AbstractEntity> nearby = environment.getNearbyEntities(animal.getPosition());
 
-        // Identify threatening animals (predators) — alive animals that are NOT prey
+        // We use AbstractEntity instead of Animal to avoid casting
         List<AbstractEntity> predators = new ArrayList<>();
         for (AbstractEntity e : nearby) {
             // If the nearby entity is alive and considers ME edible, it's a threat!
-            if (e != null && e.isAlive() && animal.isEdibleBy(e)) {
+            if (e != null && e.isAlive() && animal.isEdibleBy((Eater) e)) {
                 predators.add(e);
             }
         }
+
         if (!predators.isEmpty()) {
             AbstractEntity threat = closestOf(predators, animal.getPosition());
             return moveAway(animal, environment, threat.getPosition());
@@ -44,12 +45,12 @@ public class EscapeMovement implements MovementStrategy {
     // Private
     // -------------------------------------------------------------------------
 
-    private static AbstractEntity closestOf(List<AbstractEntity> animals, Position from) {
-        AbstractEntity closest = animals.get(0);
-        int    minDist = from.distanceTo(closest.getPosition());
-        for (AbstractEntity a : animals) {
-            int d = from.distanceTo(a.getPosition());
-            if (d < minDist) { minDist = d; closest = a; }
+    private static AbstractEntity closestOf(List<AbstractEntity> entities, Position from) {
+        AbstractEntity closest = entities.get(0);
+        int minDist = from.distanceTo(closest.getPosition());
+        for (AbstractEntity e : entities) {
+            int d = from.distanceTo(e.getPosition());
+            if (d < minDist) { minDist = d; closest = e; }
         }
         return closest;
     }
@@ -64,9 +65,9 @@ public class EscapeMovement implements MovementStrategy {
         Position[] candidates = {
             new Position(cur.getX() + dx, cur.getY() + dy),
             new Position(cur.getX() + dx, cur.getY()),
-            new Position(cur.getX(),       cur.getY() + dy),
-            new Position(cur.getX() - dx,  cur.getY()),      // sideways
-            new Position(cur.getX(),        cur.getY() - dy) // sideways
+            new Position(cur.getX(),cur.getY() + dy),
+            new Position(cur.getX() - dx,  cur.getY()),
+            new Position(cur.getX(),cur.getY() - dy)
         };
 
         for (Position candidate : candidates) {

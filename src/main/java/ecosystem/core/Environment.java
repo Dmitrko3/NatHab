@@ -95,7 +95,7 @@ public class Environment {
         mapGrid.put(entity.getPosition(), entity);
         entitiesList.add(entity);
 
-        // If the new entity is a consumable and alive, notify any waiting animals
+        // No instanceof Consumable! Just check if it yields nutrition.
         if (entity.isAlive() && entity.getNutritionValue() > 0) {
             synchronized (resourceMonitor) {
                 resourceMonitor.notifyAll();
@@ -104,9 +104,9 @@ public class Environment {
         return true;
     }
     /**
-     * Adds an entity to the world.
+     * Removes an entity from the world.
      *
-     * @return {@code true} if the entity was added successfully
+     * @return {@code true} if the entity was removed successfully
      */
     public boolean removeEntity(AbstractEntity entity) {
         if (entity == null) return false;

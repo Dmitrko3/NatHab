@@ -1,13 +1,15 @@
 package ecosystem.entities;
 
+import ecosystem.behaviors.FeedingBehavior;
 import ecosystem.core.*;
+import ecosystem.interfaces.*;
 
 /**
  * Base class for all entities.
  *
  * <p>Each entity has a position, a display symbol, and an alive state.
  */
-public abstract class AbstractEntity {
+public abstract class AbstractEntity implements FeedingBehavior, Consumable, Actable, Eater {
 
     protected Position position;
     protected final char symbol;
@@ -35,15 +37,17 @@ public abstract class AbstractEntity {
     public boolean isAlive() { return alive; }
 
     public void setAlive(boolean alive) { this.alive = alive; }
+
+    // -------------------------------------------------------------------------
+    //Identifiers
+    // -------------------------------------------------------------------------
+    public boolean isPlant() {
+        return false;
+    }
     public boolean isAnimal() {
         return false;
     }
 
-    public boolean isPlant() {
-        return false;
-    }
-
-    // --- Polymorphic Defaults to prevent instanceof & downcasting ---
     public double getMaxEnergy() {
         return 0.0;
     }
@@ -72,16 +76,6 @@ public abstract class AbstractEntity {
     }
 
     @Override
-    public boolean isCarnivore() {
-        return false;
-    }
-
-    @Override
-    public boolean isHerbivore() {
-        return false;
-    }
-
-    @Override
     public void addEnergy(double amount) {
     }
 
@@ -94,10 +88,10 @@ public abstract class AbstractEntity {
     // -------------------------------------------------------------------------
     // Object overrides
     // -------------------------------------------------------------------------
-
-    /**
-     * Identity equality — no downcasting.
-     */
+    @Override
+    public boolean isCarnivore() { return false; }
+    @Override
+    public boolean isHerbivore() { return false; }
     @Override
     public final boolean equals(Object obj) {
         return this == obj;
@@ -113,3 +107,4 @@ public abstract class AbstractEntity {
         return String.format("%s %s alive=%b", getClass().getSimpleName(), position, alive);
     }
 }
+

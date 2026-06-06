@@ -17,10 +17,11 @@ public class EatAction implements SimulationAction {
         if (target == null || eater == null || !target.isAlive() || !eater.isAlive()) {
             return false;
         }
-        // Example: remove target from environment and credit eater energy.
+
         boolean removed = environment.removeEntity(target);
         if (removed) {
-            eater.addEnergy(10.0); // Completely safe polymorphic call
+            // Polymorphic call - no instanceof LivingEntity check or casting!
+            eater.addEnergy(10.0);
         }
         return removed;
     }
