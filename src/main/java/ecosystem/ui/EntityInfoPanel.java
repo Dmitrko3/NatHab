@@ -1,21 +1,24 @@
 package ecosystem.ui;
 
+import ecosystem.core.Environment;
+import ecosystem.entities.EntityDecorator;
+import ecosystem.entities.PoisonedDecorator;
+import ecosystem.entities.SpeedBoostDecorator;
 import ecosystem.entities.*;
 
-import javax.swing.BorderFactory;
-import javax.swing.JLabel;
-import javax.swing.JPanel;
-import javax.swing.JTextArea;
-import java.awt.BorderLayout;
-import java.awt.Font;
+import javax.swing.*;
+import java.awt.*;
 
-/**
- * Side panel that displays full details about the currently selected entity.
- */
 public class EntityInfoPanel extends JPanel {
 
     private final JLabel titleLabel;
     private final JTextArea detailsArea;
+
+    // New Fields for Decorators
+    private final JButton poisonButton;
+    private final JButton speedButton;
+    private AbstractEntity currentSelectedEntity;
+    private Environment environment;
 
     public EntityInfoPanel() {
         setLayout(new BorderLayout());
@@ -32,30 +35,50 @@ public class EntityInfoPanel extends JPanel {
         add(titleLabel, BorderLayout.NORTH);
         add(detailsArea, BorderLayout.CENTER);
 
+        // Decorator Buttons Initialization
+        poisonButton = new JButton("החל רעל");
+        speedButton = new JButton("החל האצה");
+
+        JPanel buttonPanel = new JPanel();
+        buttonPanel.add(poisonButton);
+        buttonPanel.add(speedButton);
+        add(buttonPanel, BorderLayout.SOUTH);
+
+        poisonButton.addActionListener(e -> applyDecorator(new PoisonedDecorator(currentSelectedEntity)));
+        speedButton.addActionListener(e -> applyDecorator(new SpeedBoostDecorator(currentSelectedEntity)));
+
         clearEntity();
     }
 
-    /**
-     * Displays details for the selected entity.
-     *
-     * @param entity selected entity
-     */
+    public void setEnvironment(Environment env) {
+        this.environment = env;
+    }
+
+    private void applyDecorator(EntityDecorator decorator) {
+        if (currentSelectedEntity != null && environment != null) {
+            environment.removeEntity(currentSelectedEntity);
+            environment.addEntity(decorator);
+            displayEntity(decorator); // Refresh UI
+        }
+    }
+
     public void displayEntity(AbstractEntity entity) {
         if (entity == null) {
             clearEntity();
             return;
         }
 
-        titleLabel.setText(entity.getClass().getSimpleName());
+        this.currentSelectedEntity = entity;
+        poisonButton.setEnabled(true);
+        speedButton.setEnabled(true);
 
-        // Base info
+        titleLabel.setText(entity.getClass().getSimpleName());
         StringBuilder sb = new StringBuilder();
         sb.append("Type: ").append(entity.getClass().getSimpleName()).append("\n");
         sb.append("Symbol: ").append(entity.getSymbol()).append("\n");
         sb.append("Position: ").append(entity.getPosition()).append("\n");
         sb.append("Alive: ").append(entity.isAlive()).append("\n");
 
-        // If it's a living entity (animals/plants), show energy and age
         if (entity instanceof LivingEntity) {
             LivingEntity living = (LivingEntity) entity;
             sb.append(String.format("Energy: %.1f / %.1f%n", living.getEnergy(), living.getMaxEnergy()));
@@ -65,10 +88,10 @@ public class EntityInfoPanel extends JPanel {
         detailsArea.setText(sb.toString());
     }
 
-    /**
-     * Clears the panel when no entity is selected.
-     */
     public void clearEntity() {
+        this.currentSelectedEntity = null;
+        poisonButton.setEnabled(false);
+        speedButton.setEnabled(false);
         titleLabel.setText("No entity selected");
         detailsArea.setText("Click an entity on the map to view its details.");
     }

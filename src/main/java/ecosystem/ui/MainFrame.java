@@ -48,6 +48,7 @@ public class MainFrame extends JFrame implements SimulationListener {
      */
     private void initializePanels() {
         infoPanel = new EntityInfoPanel();
+        infoPanel.setEnvironment(environment); // Added line
         simulationPanel = new SimulationGridPanel(environment, infoPanel);
         controlPanel = new ControlPanel(controller);
     }
@@ -77,7 +78,7 @@ public class MainFrame extends JFrame implements SimulationListener {
     @Override
     public boolean onSimulationUpdated(Environment environment) {
         this.environment = environment;
-
+        infoPanel.setEnvironment(environment); // Added line
         SwingUtilities.invokeLater(() -> {
             simulationPanel.repaint();
             infoPanel.repaint();
@@ -85,6 +86,8 @@ public class MainFrame extends JFrame implements SimulationListener {
         });
         return true;
     }
+
+
 
     /**
      * Gets the controller.

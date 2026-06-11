@@ -6,7 +6,7 @@ import ecosystem.entities.*;
 import ecosystem.entities.animals.*;
 import ecosystem.entities.plants.*;
 import ecosystem.entities.resources.*;
-
+import ecosystem.entities.EntityFactory;
 import javax.swing.BorderFactory;
 import javax.swing.JComboBox;
 import javax.swing.JDialog;
@@ -68,24 +68,14 @@ public class AddEntityDialog extends JDialog {
      * Creates the input fields and buttons.
      */
     private void initializeComponents() {
-        entityTypeBox = new JComboBox<>(new String[] {
-                "Lion",
-                "Deer",
-                "Rabbit",
-                "Tree",
-                "Flower",
-                "Rock",
-                "Water"
-        });
-
+        // Use Factory to fetch dynamic available types, satisfying Open/Closed Principle
+        entityTypeBox = new JComboBox<>(EntityFactory.getSupportedTypes());
         xField = new JTextField(10);
         yField = new JTextField(10);
         energyField = new JTextField(10);
-
         addButton = new JButton("Add");
         cancelButton = new JButton("Cancel");
     }
-
     /**
      * Arranges the UI components in the dialog.
      */

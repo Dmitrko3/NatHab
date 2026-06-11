@@ -1,12 +1,15 @@
 package ecosystem.entities.animals;
 
+import ecosystem.behaviors.EntityState;
 import ecosystem.behaviors.FeedingBehavior;
+import ecosystem.behaviors.IdleState;
 import ecosystem.behaviors.MovementStrategy;
 import ecosystem.core.Environment;
 import ecosystem.core.Position;
 import ecosystem.entities.AbstractEntity;
 import ecosystem.entities.LivingEntity;
 import ecosystem.interfaces.*;
+import ecosystem.*;
 
 import java.util.List;
 
@@ -26,6 +29,7 @@ public abstract class Animal extends LivingEntity
 
     protected MovementStrategy movementStrategy;
     protected FeedingBehavior  feedingBehavior;
+    protected EntityState currentState; // Added State property
 
     protected Animal(Position position, char symbol,
                      double initialEnergy, double maxEnergy,
@@ -34,20 +38,29 @@ public abstract class Animal extends LivingEntity
         super(position, symbol, initialEnergy, maxEnergy);
         this.movementStrategy = movementStrategy;
         this.feedingBehavior  = feedingBehavior;
+        this.currentState = new IdleState(); // Start in IdleState
     }
 
+    public void setState(EntityState state) {
+        this.currentState = state;
+    }
     // -------------------------------------------------------------------------
     // Actable
     // -------------------------------------------------------------------------
 
     @Override
     public boolean act(Environment environment) {
-        super.act(environment);        // age++, energy -= 2, maybe die
+        this.age++;
         if (!alive) return false;
 
-        List<AbstractEntity> nearby = sense(environment);   // sense before moving
-        movementStrategy.move(this, environment);           // move
-        feedingBehavior.eat(this, nearby, environment);     // eat (pre-move snapshot)
+        // Delegate behavior to the current state
+        if (currentState != null) {
+            currentState.doAction(this, environment);
+        }
+
+        if (this.energy <= 0) {
+            this.alive = false;
+        }
         return true;
     }
 
@@ -84,6 +97,8 @@ public abstract class Animal extends LivingEntity
     public List<AbstractEntity> sense(Environment environment) {
         return environment.getNearbyEntities(position);
     }
+
+
 
     // -------------------------------------------------------------------------
     // Consumable  (animals can be prey)
