@@ -15,16 +15,16 @@ public class SpeedBoostDecorator extends EntityDecorator {
 
     @Override
     public boolean act(Environment environment) {
-        if (duration <= 0) {
+        if (getDuration() <= 0) {
             removeEffect(environment);
-            return decoratedEntity.act(environment);
+            return getDecoratedEntity().act(environment);
         }
 
         // Executes twice per tick (Speed Boost)
-        boolean r1 = decoratedEntity.act(environment);
-        boolean r2 = decoratedEntity.act(environment);
+        boolean r1 = getDecoratedEntity().act(environment);
+        boolean r2 = getDecoratedEntity().act(environment);
 
-        duration--;
+        decrementDuration();
         return r1 || r2;
     }
 

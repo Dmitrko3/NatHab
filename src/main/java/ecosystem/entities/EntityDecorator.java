@@ -5,56 +5,84 @@ import ecosystem.core.Position;
 import ecosystem.entities.AbstractEntity;
 import ecosystem.interfaces.Actable;
 
+/**
+ * Base decorator for entities.
+ */
 public abstract class EntityDecorator extends AbstractEntity {
-    protected Actable decoratedEntity; // Composition required by assignment
-    protected int duration = 10;
+    private final Actable decoratedEntity; // now private
+    private int duration = 10;             // now private
 
     public EntityDecorator(Actable decoratedEntity) {
         super(((AbstractEntity) decoratedEntity).getPosition(), ((AbstractEntity) decoratedEntity).getSymbol());
         this.decoratedEntity = decoratedEntity;
     }
 
+    // --------- Protected accessor API for subclasses (validation/encapsulation) ---------
+    protected Actable getDecoratedEntity() {
+        return decoratedEntity;
+    }
+
+    protected int getDuration() {
+        return duration;
+    }
+
+    /**
+     * Set duration with validation.
+     */
+    protected void setDuration(int newDuration) {
+        this.duration = Math.max(0, newDuration);
+    }
+
+    /**
+     * Decrement duration by 1 .
+     */
+    protected void decrementDuration() {
+        setDuration(this.duration - 1);
+    }
+
+    // -----------------------------------------------------------------------------------
     @Override
     public boolean act(Environment environment) {
-        if (duration <= 0) {
+        if (getDuration() <= 0) {
             removeEffect(environment);
-            return decoratedEntity.act(environment);
+            return getDecoratedEntity().act(environment);
         }
-        duration--;
-        return true; // Behavior injected in subclasses
+        decrementDuration();
+        return true; // Subclasses inject behavior in their overrides
     }
 
     protected void removeEffect(Environment environment) {
-        AbstractEntity original = (AbstractEntity) decoratedEntity;
+        AbstractEntity original = (AbstractEntity) getDecoratedEntity();
+        // put the original back into the grid at this decorator's position
         original.setPosition(this.getPosition());
         environment.removeEntity(this);
         environment.addEntity(original);
     }
 
-    // We delegate base operations so it continues to function normally in the grid
+    // Delegate base operations to the wrapped entity where possible using accessors
     @Override
     public void setPosition(Position position) {
         super.setPosition(position);
-        if (decoratedEntity instanceof AbstractEntity) {
-            ((AbstractEntity) decoratedEntity).setPosition(position);
+        if (getDecoratedEntity() instanceof AbstractEntity) {
+            ((AbstractEntity) getDecoratedEntity()).setPosition(position);
         }
     }
 
     @Override
     public boolean isAlive() {
-        if (decoratedEntity instanceof AbstractEntity) return ((AbstractEntity) decoratedEntity).isAlive();
+        if (getDecoratedEntity() instanceof AbstractEntity) return ((AbstractEntity) getDecoratedEntity()).isAlive();
         return super.isAlive();
     }
 
     @Override
     public void setAlive(boolean alive) {
         super.setAlive(alive);
-        if (decoratedEntity instanceof AbstractEntity) ((AbstractEntity) decoratedEntity).setAlive(alive);
+        if (getDecoratedEntity() instanceof AbstractEntity) ((AbstractEntity) getDecoratedEntity()).setAlive(alive);
     }
 
     @Override
     public char getSymbol() {
-        if (decoratedEntity instanceof AbstractEntity) return ((AbstractEntity) decoratedEntity).getSymbol();
+        if (getDecoratedEntity() instanceof AbstractEntity) return ((AbstractEntity) getDecoratedEntity()).getSymbol();
         return super.getSymbol();
     }
 }

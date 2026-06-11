@@ -7,26 +7,35 @@ import ecosystem.interfaces.Actable;
 
 import java.util.List;
 
+/**
+ * Poison effect applied to living entities.
+ */
 public class PoisonedDecorator extends EntityDecorator {
-    public PoisonedDecorator(Actable decoratedEntity) {
-        super(decoratedEntity);
+    private final LivingEntity livingTarget;
+
+    /**
+     * Construct with a LivingEntity target. This makes the decorator's intent explicit
+     * and avoids instanceof checks during act().
+     */
+    public PoisonedDecorator(LivingEntity decoratedEntity) {
+        super((Actable) decoratedEntity);
+        this.livingTarget = decoratedEntity;
     }
 
     @Override
     public boolean act(Environment environment) {
-        if (duration <= 0) {
+        if (getDuration() <= 0) {
             removeEffect(environment);
-            return decoratedEntity.act(environment);
+            return getDecoratedEntity().act(environment);
         }
 
-        boolean result = decoratedEntity.act(environment);
+        boolean result = getDecoratedEntity().act(environment);
 
-        if (decoratedEntity instanceof LivingEntity) {
-            LivingEntity le = (LivingEntity) decoratedEntity;
-            le.setEnergy(le.getEnergy() - 5); // Poison penalty
+        if (livingTarget != null) {
+            livingTarget.setEnergy(livingTarget.getEnergy() - 5); // Poison penalty
         }
 
-        duration--;
+        decrementDuration();
         return result;
     }
 

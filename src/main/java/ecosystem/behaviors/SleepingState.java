@@ -1,8 +1,6 @@
 package ecosystem.behaviors;
 
-import ecosystem.behaviors.EntityState;
 import ecosystem.core.Environment;
-import ecosystem.entities.LivingEntity;
 import ecosystem.entities.animals.Animal;
 
 public class SleepingState implements EntityState {
@@ -10,14 +8,15 @@ public class SleepingState implements EntityState {
     private int ticksAsleep = 0;
 
     @Override
-    public void doAction(LivingEntity e, Environment env) {
-        e.setEnergy(e.getEnergy() + 2); // Recovers energy while resting
+    public boolean doAction(Animal animal, Environment env) {
+        if (animal == null || !animal.isAlive()) return false;
+
+        animal.setEnergy(animal.getEnergy() + 2); // Recovers energy while resting
         ticksAsleep++;
 
         if (ticksAsleep >= SLEEP_DURATION) {
-            if (e instanceof Animal) {
-                ((Animal) e).setState(new IdleState());
-            }
+            animal.setState(new IdleState());
         }
+        return true;
     }
 }

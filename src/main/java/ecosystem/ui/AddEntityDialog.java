@@ -179,29 +179,7 @@ public class AddEntityDialog extends JDialog {
      * @return the newly created entity
      */
     private AbstractEntity createEntity(String entityType, Position position) {
-        if ("Lion".equals(entityType)) {
-            return new Lion(position);
-        }
-        if ("Deer".equals(entityType)) {
-            return new Deer(position);
-        }
-        if ("Rabbit".equals(entityType)) {
-            return new Rabbit(position);
-        }
-        if ("Tree".equals(entityType)) {
-            return new Tree(position);
-        }
-        if ("Flower".equals(entityType)) {
-            return new Flower(position);
-        }
-        if ("Rock".equals(entityType)) {
-            return new Rock(position);
-        }
-        if ("Water".equals(entityType)) {
-            return new Water(position);
-        }
-
-        throw new IllegalArgumentException("Unknown entity type selected.");
+        return EntityFactory.createEntity(entityType, position, 0);
     }
 
     /**

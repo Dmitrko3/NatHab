@@ -41,21 +41,30 @@ public abstract class Animal extends LivingEntity
         this.currentState = new IdleState(); // Start in IdleState
     }
 
-    public void setState(EntityState state) {
+    /**
+     * Set the current state for this animal.
+     * Returns true when the assignment was successful (state != null), false otherwise.
+     */
+    public boolean setState(EntityState state) {
+        if (state == null) return false;
         this.currentState = state;
+        return true;
     }
     // -------------------------------------------------------------------------
     // Actable
     // -------------------------------------------------------------------------
-
     @Override
     public boolean act(Environment environment) {
         this.age++;
         if (!alive) return false;
 
-        // Delegate behavior to the current state
+        // Delegate behavior to the current state and observe success/failure
         if (currentState != null) {
-            currentState.doAction(this, environment);
+            boolean ok = currentState.doAction(this, environment);
+            if (!ok) {
+                // Log a warning — state action failed
+                System.err.println("State " + currentState.getClass().getSimpleName() + " failed for " + this);
+            }
         }
 
         if (this.energy <= 0) {
@@ -97,8 +106,6 @@ public abstract class Animal extends LivingEntity
     public List<AbstractEntity> sense(Environment environment) {
         return environment.getNearbyEntities(position);
     }
-
-
 
     // -------------------------------------------------------------------------
     // Consumable  (animals can be prey)
