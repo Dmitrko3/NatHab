@@ -18,7 +18,7 @@ public class HungryState implements EntityState {
         animal.getMovementStrategy().move(animal, env);
         animal.getFeedingBehavior().eat(animal, nearby, env);
 
-        // State transitions — no casting needed
+        // State transitions
         if (animal.getEnergy() > animal.getMaxEnergy() * 0.8) {
             animal.setState(new IdleState());
         } else if (isAtCorner(animal, env)) {
