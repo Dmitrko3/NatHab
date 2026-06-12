@@ -8,6 +8,10 @@ import ecosystem.interfaces.*;
  * Base class for all entities.
  *
  * <p>Each entity has a position, a display symbol, and an alive state.
+ *
+ * <p>This class exposes lightweight polymorphic accessors for "energy" and "age".
+ * Non-living entities return neutral defaults (energy = 0, age = 0). LivingEntity
+ * overrides these so callers can operate on AbstractEntity.
  */
 public abstract class AbstractEntity implements FeedingBehavior, Consumable, Actable, Eater {
 
@@ -24,7 +28,6 @@ public abstract class AbstractEntity implements FeedingBehavior, Consumable, Act
     // -------------------------------------------------------------------------
     // Accessors
     // -------------------------------------------------------------------------
-
     public Position getPosition() { return position; }
 
     /**
@@ -39,20 +42,41 @@ public abstract class AbstractEntity implements FeedingBehavior, Consumable, Act
     public void setAlive(boolean alive) { this.alive = alive; }
 
     // -------------------------------------------------------------------------
-    //Identifiers
+    // Identification & lightweight "living" API (defaults for non-living)
     // -------------------------------------------------------------------------
     public boolean isPlant() {
         return false;
     }
-    public boolean isAnimal() {
-        return false;
+    public boolean isAnimal() { return false; }
+
+    /**
+     * Returns the current energy. Default for non-living entities = 0.0.
+     * LivingEntity overrides this.
+     */
+    public double getEnergy() {
+        return 0.0;
     }
 
+    /**
+     * Returns the maximum energy supported by this entity. Default 0.0.
+     * LivingEntity overrides this.
+     */
     public double getMaxEnergy() {
         return 0.0;
     }
 
+    /**
+     * Sets energy; default no-op for non-living entities.
+     * LivingEntity overrides with meaningful behavior.
+     */
     public void setEnergy(double energy) {
+    }
+
+    /**
+     * Returns age (default 0 for non-living).
+     */
+    public int getAge() {
+        return 0;
     }
 
     @Override
@@ -84,7 +108,6 @@ public abstract class AbstractEntity implements FeedingBehavior, Consumable, Act
         return true;
     }
 
-
     // -------------------------------------------------------------------------
     // Object overrides
     // -------------------------------------------------------------------------
@@ -107,4 +130,3 @@ public abstract class AbstractEntity implements FeedingBehavior, Consumable, Act
         return String.format("%s %s alive=%b", getClass().getSimpleName(), position, alive);
     }
 }
-

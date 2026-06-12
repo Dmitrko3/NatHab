@@ -1,15 +1,11 @@
 package ecosystem.entities;
 
 import ecosystem.core.Environment;
-import ecosystem.entities.AbstractEntity;
-import ecosystem.entities.EntityDecorator;
-import ecosystem.entities.animals.Animal;
-import ecosystem.interfaces.Actable;
 
 import java.util.List;
 
 public class SpeedBoostDecorator extends EntityDecorator {
-    public SpeedBoostDecorator(Actable decoratedEntity) {
+    public SpeedBoostDecorator(AbstractEntity decoratedEntity) {
         super(decoratedEntity);
     }
 
@@ -29,7 +25,7 @@ public class SpeedBoostDecorator extends EntityDecorator {
     }
 
     @Override
-    public boolean eat(Animal animal, List<AbstractEntity> nearby, Environment environment) {
+    public boolean eat(Animal animal, java.util.List<AbstractEntity> nearby, Environment environment) {
         return false;
     }
 }

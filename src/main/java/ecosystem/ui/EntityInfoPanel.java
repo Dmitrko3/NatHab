@@ -4,8 +4,7 @@ import ecosystem.core.Environment;
 import ecosystem.entities.EntityDecorator;
 import ecosystem.entities.PoisonedDecorator;
 import ecosystem.entities.SpeedBoostDecorator;
-import ecosystem.entities.*;
-import ecosystem.entities.LivingEntity;
+import ecosystem.entities.AbstractEntity;
 
 import javax.swing.*;
 import java.awt.*;
@@ -15,7 +14,6 @@ public class EntityInfoPanel extends JPanel {
     private final JLabel titleLabel;
     private final JTextArea detailsArea;
 
-    // New Fields for Decorators
     private final JButton poisonButton;
     private final JButton speedButton;
     private AbstractEntity currentSelectedEntity;
@@ -36,7 +34,6 @@ public class EntityInfoPanel extends JPanel {
         add(titleLabel, BorderLayout.NORTH);
         add(detailsArea, BorderLayout.CENTER);
 
-        // Decorator Buttons Initialization
         poisonButton = new JButton("החל רעל");
         speedButton = new JButton("החל האצה");
 
@@ -45,17 +42,17 @@ public class EntityInfoPanel extends JPanel {
         buttonPanel.add(speedButton);
         add(buttonPanel, BorderLayout.SOUTH);
 
-        // Action listeners: create decorator only when target is a LivingEntity
+        // Build decorators using AbstractEntity directly
         poisonButton.addActionListener(e -> {
-            if (currentSelectedEntity instanceof LivingEntity) {
-                applyDecorator(new PoisonedDecorator((LivingEntity) currentSelectedEntity));
-            } else {
-                // Should not occur because button is disabled for non-living, but be defensive
-                JOptionPane.showMessageDialog(this, "Only living entities can be poisoned.", "Invalid Target", JOptionPane.WARNING_MESSAGE);
+            if (currentSelectedEntity != null) {
+                applyDecorator(new PoisonedDecorator(currentSelectedEntity));
             }
         });
-
-        speedButton.addActionListener(e -> applyDecorator(new SpeedBoostDecorator(currentSelectedEntity)));
+        speedButton.addActionListener(e -> {
+            if (currentSelectedEntity != null) {
+                applyDecorator(new SpeedBoostDecorator(currentSelectedEntity));
+            }
+        });
 
         clearEntity();
     }
@@ -80,9 +77,9 @@ public class EntityInfoPanel extends JPanel {
 
         this.currentSelectedEntity = entity;
 
-        // Enable poison button only for living entities; speed is general
-        boolean isLiving = (entity instanceof LivingEntity);
-        poisonButton.setEnabled(isLiving);
+        // Determine whether the entity uses energy by checking max energy > 0
+        boolean usesEnergy = entity.getMaxEnergy() > 0.0;
+        poisonButton.setEnabled(usesEnergy);
         speedButton.setEnabled(true);
 
         titleLabel.setText(entity.getClass().getSimpleName());
@@ -92,10 +89,9 @@ public class EntityInfoPanel extends JPanel {
         sb.append("Position: ").append(entity.getPosition()).append("\n");
         sb.append("Alive: ").append(entity.isAlive()).append("\n");
 
-        if (isLiving) {
-            LivingEntity living = (LivingEntity) entity;
-            sb.append(String.format("Energy: %.1f / %.1f%n", living.getEnergy(), living.getMaxEnergy()));
-            sb.append("Age: ").append(living.getAge()).append("\n");
+        if (usesEnergy) {
+            sb.append(String.format("Energy: %.1f / %.1f%n", entity.getEnergy(), entity.getMaxEnergy()));
+            sb.append("Age: ").append(entity.getAge()).append("\n");
         }
 
         detailsArea.setText(sb.toString());

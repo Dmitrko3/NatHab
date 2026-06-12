@@ -1,12 +1,13 @@
 package ecosystem.entities;
 
 import ecosystem.core.Position;
-import ecosystem.entities.AbstractEntity;
-import ecosystem.entities.LivingEntity;
 import ecosystem.entities.animals.*;
 import ecosystem.entities.plants.*;
 import ecosystem.entities.resources.*;
 
+/**
+ * Centralized factory for creating entities by type name.
+ */
 public class EntityFactory {
 
     public static String[] getSupportedTypes() {
@@ -27,8 +28,9 @@ public class EntityFactory {
             default: throw new IllegalArgumentException("Unknown entity type: " + type);
         }
 
-        if (initialEnergy >= 0 && entity instanceof LivingEntity) {
-            ((LivingEntity) entity).setEnergy(initialEnergy);
+        // If the created entity supports energy (getMaxEnergy() > 0), apply initialEnergy
+        if (initialEnergy >= 0 && entity.getMaxEnergy() > 0.0) {
+            entity.setEnergy(initialEnergy);
         }
 
         return entity;

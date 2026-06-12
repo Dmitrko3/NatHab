@@ -170,16 +170,17 @@ public class AddEntityDialog extends JDialog {
         return x >= 0 && x < Environment.WIDTH
                 && y >= 0 && y < Environment.HEIGHT;
     }
-
     /**
-     * Creates an entity based on the selected type.
+     * Creates an entity by delegating to the EntityFactory.
      *
      * @param entityType the entity type name
      * @param position the starting coordinates
      * @return the newly created entity
      */
     private AbstractEntity createEntity(String entityType, Position position) {
-        return EntityFactory.createEntity(entityType, position, 0);
+        // Pass -1 as initialEnergy to indicate "no initial energy set by factory";
+        // the dialog will apply starting energy separately via applyStartingEnergyIfNeeded().
+        return EntityFactory.createEntity(entityType, position, -1);
     }
 
     /**

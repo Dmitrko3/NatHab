@@ -1,25 +1,18 @@
 package ecosystem.entities;
 
 import ecosystem.core.Environment;
-import ecosystem.entities.LivingEntity;
 import ecosystem.entities.animals.Animal;
-import ecosystem.interfaces.Actable;
 
 import java.util.List;
 
 /**
- * Poison effect applied to living entities.
+ * Poison effect applied to entities; operates by reducing energy if supported.
+ * The decorator accepts any AbstractEntity; setEnergy/getEnergy are default to no-op
+ * for non-living entities.
  */
 public class PoisonedDecorator extends EntityDecorator {
-    private final LivingEntity livingTarget;
-
-    /**
-     * Construct with a LivingEntity target. This makes the decorator's intent explicit
-     * and avoids instanceof checks during act().
-     */
-    public PoisonedDecorator(LivingEntity decoratedEntity) {
-        super((Actable) decoratedEntity);
-        this.livingTarget = decoratedEntity;
+    public PoisonedDecorator(AbstractEntity decoratedEntity) {
+        super(decoratedEntity);
     }
 
     @Override
@@ -31,9 +24,9 @@ public class PoisonedDecorator extends EntityDecorator {
 
         boolean result = getDecoratedEntity().act(environment);
 
-        if (livingTarget != null) {
-            livingTarget.setEnergy(livingTarget.getEnergy() - 5); // Poison penalty
-        }
+        // Apply poison penalty using polymorphic accessors. Non-living entities will ignore.
+        double current = getDecoratedEntity().getEnergy();
+        getDecoratedEntity().setEnergy(current - 5);
 
         decrementDuration();
         return result;
