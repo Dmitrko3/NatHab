@@ -6,14 +6,21 @@ import ecosystem.entities.plants.*;
 import ecosystem.entities.resources.*;
 
 /**
- * Centralized factory for creating entities by type name.
+ * Design Pattern: Factory Method
+ * Factory for creating entities dynamically, ensuring the Open/Closed Principle.
  */
 public class EntityFactory {
-
+    /** @return Array of supported entity types. */
     public static String[] getSupportedTypes() {
         return new String[] { "Lion", "Deer", "Rabbit", "Tree", "Flower", "Rock", "Water" };
     }
-
+    /**
+     * Creates a new entity.
+     * @param type Entity type (e.g., "Lion").
+     * @param pos Starting position.
+     * @param initialEnergy Starting energy (if applicable).
+     * @return The created AbstractEntity.
+     */
     public static AbstractEntity createEntity(String type, Position pos, int initialEnergy) {
         AbstractEntity entity = null;
 

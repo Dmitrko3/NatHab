@@ -7,8 +7,7 @@ import java.util.List;
 
 /**
  * Poison effect applied to entities; operates by reducing energy if supported.
- * The decorator accepts any AbstractEntity; setEnergy/getEnergy are default to no-op
- * for non-living entities.
+ * Applies a poison effect, draining extra energy.
  */
 public class PoisonedDecorator extends EntityDecorator {
     public PoisonedDecorator(AbstractEntity decoratedEntity) {

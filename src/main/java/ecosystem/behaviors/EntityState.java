@@ -8,5 +8,10 @@ import ecosystem.entities.animals.Animal;
  * doAction returns true if the state's logic executed successfully, false otherwise.
  */
 public interface EntityState {
+    /**
+     * Executes state-specific behavior.
+     * @param e The acting entity.
+     * @param env The simulation environment.
+     */
     boolean doAction(Animal animal, Environment env);
 }

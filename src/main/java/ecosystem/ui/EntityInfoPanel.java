@@ -8,7 +8,9 @@ import ecosystem.entities.AbstractEntity;
 
 import javax.swing.*;
 import java.awt.*;
-
+/**
+ * UI panel displaying entity details and controls for Decorator effects.
+ */
 public class EntityInfoPanel extends JPanel {
 
     private final JLabel titleLabel;
@@ -56,11 +58,11 @@ public class EntityInfoPanel extends JPanel {
 
         clearEntity();
     }
-
+    /** @param env The simulation environment. */
     public void setEnvironment(Environment env) {
         this.environment = env;
     }
-
+    /** @param decorator The effect to apply. */
     private void applyDecorator(EntityDecorator decorator) {
         if (currentSelectedEntity != null && environment != null && decorator != null) {
             environment.removeEntity(currentSelectedEntity);
@@ -68,7 +70,7 @@ public class EntityInfoPanel extends JPanel {
             displayEntity(decorator); // Refresh UI
         }
     }
-
+    /** @param entity Entity to display. */
     public void displayEntity(AbstractEntity entity) {
         if (entity == null) {
             clearEntity();
@@ -96,7 +98,7 @@ public class EntityInfoPanel extends JPanel {
 
         detailsArea.setText(sb.toString());
     }
-
+    /** Clears panel information. */
     public void clearEntity() {
         this.currentSelectedEntity = null;
         poisonButton.setEnabled(false);

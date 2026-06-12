@@ -4,8 +4,8 @@ import ecosystem.core.Environment;
 import ecosystem.core.Position;
 
 /**
- * Base decorator for entities. The decorated item is stored as an AbstractEntity so
- * decorator logic can call polymorphic accessors (energy, position, alive).
+ * Base decorator for entities.
+ *Abstract base for dynamically adding effects to entities.
  */
 public abstract class EntityDecorator extends AbstractEntity {
     private final AbstractEntity decoratedEntity; // now concrete type
@@ -42,7 +42,10 @@ public abstract class EntityDecorator extends AbstractEntity {
         decrementDuration();
         return true; // subclasses inject behavior in their overrides
     }
-
+    /**
+     * Removes the effect and restores the original entity.
+     * @param environment The simulation grid.
+     */
     protected void removeEffect(Environment environment) {
         AbstractEntity original = getDecoratedEntity();
         original.setPosition(this.getPosition());

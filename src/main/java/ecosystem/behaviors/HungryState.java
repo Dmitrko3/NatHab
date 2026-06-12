@@ -5,7 +5,9 @@ import ecosystem.entities.AbstractEntity;
 import ecosystem.entities.animals.Animal;
 
 import java.util.List;
-
+/**
+ * Entity loses energy rapidly and seeks food.
+ */
 public class HungryState implements EntityState {
     @Override
     public boolean doAction(Animal animal, Environment env) {

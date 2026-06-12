@@ -4,7 +4,9 @@ import ecosystem.core.Environment;
 import ecosystem.entities.AbstractEntity;
 import ecosystem.entities.animals.Animal;
 import ecosystem.behaviors.RandomMovement;
-
+/**
+ * Entity wanders or rests, using minimal energy.
+ */
 public class IdleState implements EntityState {
     @Override
     public boolean doAction(Animal animal, Environment env) {

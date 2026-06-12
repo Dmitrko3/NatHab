@@ -1,9 +1,12 @@
 package ecosystem.entities;
 
 import ecosystem.core.Environment;
+import ecosystem.entities.animals.Animal;
 
 import java.util.List;
-
+/**
+ * Applies a speed boost, allowing two actions per tick.
+ */
 public class SpeedBoostDecorator extends EntityDecorator {
     public SpeedBoostDecorator(AbstractEntity decoratedEntity) {
         super(decoratedEntity);

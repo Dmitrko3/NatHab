@@ -2,7 +2,9 @@ package ecosystem.behaviors;
 
 import ecosystem.core.Environment;
 import ecosystem.entities.animals.Animal;
-
+/**
+ * Entity sleeps in a corner to recover energy.
+ */
 public class SleepingState implements EntityState {
     private static final int SLEEP_DURATION = 5;
     private int ticksAsleep = 0;

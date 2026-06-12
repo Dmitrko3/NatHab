@@ -61,6 +61,7 @@ public abstract class LivingEntity extends AbstractEntity implements Actable, Ru
     // Runnable: entity execution loop
     // -------------------------------------------------------------------------
     @Override
+    /** Executes the entity's thread loop. */
     public void run() {
         while (isThreadActive) {
             try {
@@ -89,8 +90,9 @@ public abstract class LivingEntity extends AbstractEntity implements Actable, Ru
             }
         }
     }
-
-    /**     * Start this entity's internal thread. Must provide a non-null Environment.     * Returns true if thread was started, false otherwise.     */
+    /**
+     * Start this entity's internal thread. Must provide a non-null Environment.
+     * Returns true if thread was started, false otherwise.     */
     public boolean startThread(Environment environment) {
         if (environment == null) return false;
         // prevent starting when already active
@@ -103,7 +105,7 @@ public abstract class LivingEntity extends AbstractEntity implements Actable, Ru
         return true;
     }
 
-    /**     * Stop the internal thread. Returns true if stop request was issued.     */
+    /**Stop the internal thread. Returns true if stop request was issued.     */
     public boolean stopThread() {
         boolean ok = setThreadActive(false);
         if (entityThread != null) {
@@ -112,7 +114,9 @@ public abstract class LivingEntity extends AbstractEntity implements Actable, Ru
         return ok;
     }
 
-    /**     * Protected setter for the thread-active flag.     * Validates that the thread is not being improperly restarted.     *     * @return true if the flag was set successfully, false otherwise     */
+    /**     * Protected setter for the thread-active flag.
+     * Validates that the thread is not being improperly restarted.
+     * @return true if the flag was set successfully, false otherwise     */
     protected boolean setThreadActive(boolean active) {
         synchronized (this) {
             // disallow restarting a currently active thread
@@ -125,8 +129,11 @@ public abstract class LivingEntity extends AbstractEntity implements Actable, Ru
     // -------------------------------------------------------------------------
     // Accessors
     // -------------------------------------------------------------------------
+    /** @return Entity's age. */
     public int    getAge()       { return age; }
+    /** @return Current energy. */
     public double getEnergy()    { return energy; }
+    /** @return Maximum energy. */
     public double getMaxEnergy() { return maxEnergy; }
 
     /**     * Sets energy, clamping to [0, maxEnergy].     */
@@ -144,6 +151,7 @@ public abstract class LivingEntity extends AbstractEntity implements Actable, Ru
                 getClass().getSimpleName(), position, energy, age, alive);
     }
     @Override
+    /** @param amount Energy to add. */
     public void addEnergy(double amount) {
         setEnergy(Math.min(maxEnergy, energy + amount));
     }
