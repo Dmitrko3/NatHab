@@ -43,8 +43,8 @@ public class EntityInfoPanel extends JPanel {
         add(titleLabel, BorderLayout.NORTH);
         add(detailsArea, BorderLayout.CENTER);
 
-        poisonButton = new JButton("החל רעל");
-        speedButton = new JButton("החל האצה");
+        poisonButton = new JButton("Start Poison");
+        speedButton = new JButton("Start Speed");
 
         // Prepare send controls
         ipField = new JTextField(12);
