@@ -18,7 +18,7 @@ public class NetworkManager {
     private ExecutorService clientPool;
     private Thread serverThread;
 
-    // Start the server: spawns a background daemon thread that accepts connections
+    // Start the server: spawns a background thread that accepts connections
     public synchronized void startServer() {
         if (running) {
             System.out.println("Network server already running");
@@ -30,12 +30,10 @@ public class NetworkManager {
 
         serverThread = new Thread(() -> {
             try {
-                // FIX: Explicitly bind to the IPv4 wildcard address
                 serverSocket = new ServerSocket();
                 serverSocket.setReuseAddress(true);
                 serverSocket.bind(new java.net.InetSocketAddress("0.0.0.0", PORT));
 
-                // Helpful print to show your ACTUAL local IP to give to your friend
                 String myIP = java.net.InetAddress.getLocalHost().getHostAddress();
                 System.out.println("Server is listening on port " + PORT);
                 System.out.println("--> TELL YOUR FRIEND TO USE THIS IP: " + myIP);
@@ -43,10 +41,8 @@ public class NetworkManager {
                 while (running) {
                     try {
                         Socket clientSocket = serverSocket.accept(); // blocking
-                        // Handle client in separate thread so accept() can continue
                         clientPool.submit(() -> handleClient(clientSocket));
                     } catch (SocketException se) {
-                        // SocketException often thrown when serverSocket.close() is called during shutdown
                         if (running) {
                             System.err.println("Socket exception in accept loop:");
                             se.printStackTrace();
@@ -54,7 +50,7 @@ public class NetworkManager {
                             // expected during shutdown; break out
                         }
                     } catch (IOException e) {
-                        // Log and continue; do not let one accept error kill the server loop
+                        // Log and continue;
                         System.err.println("I/O error accepting connection:");
                         e.printStackTrace();
                     }
@@ -63,7 +59,6 @@ public class NetworkManager {
                 System.err.println("Failed to create ServerSocket on port " + PORT);
                 e.printStackTrace();
             } finally {
-                // Ensure resources are cleaned up if thread exits
                 shutdownResources();
             }
         }, "NetworkManager-ServerThread");
@@ -72,7 +67,7 @@ public class NetworkManager {
         serverThread.start();
     }
 
-    // Gracefully stop the server and all client handlers
+    // stop the server and all client handlers
     public synchronized void stopServer() {
         if (!running) {
             return;
@@ -92,7 +87,7 @@ public class NetworkManager {
         System.out.println("Network server stopped");
     }
 
-    // Clean-up helper used in finally block
+    // Clean-up
     private void shutdownResources() {
         try {
             if (serverSocket != null && !serverSocket.isClosed()) {
@@ -137,8 +132,6 @@ public class NetworkManager {
         }
     }
 
-    // Existing sendEntity method left functionally the same but with try-with-resources
-// In NetworkManager.java
     public boolean sendEntity(String targetIP, String entityData) {
         try (Socket socket = new Socket(targetIP, PORT);
              PrintWriter out = new PrintWriter(socket.getOutputStream(), true)) {

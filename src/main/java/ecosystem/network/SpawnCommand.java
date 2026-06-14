@@ -24,7 +24,6 @@ public class SpawnCommand implements NetworkCommand {
     @Override
     public boolean execute(Environment env) {
         Position pos = new Position(x, y);
-        // EntityFactory will throw IllegalArgumentException for unknown types
         AbstractEntity entity = EntityFactory.createEntity(type, pos, energy);
         return env.addEntity(entity);
     }

@@ -163,7 +163,7 @@ public class SimulationController {
         this.networkManager = networkManager;
     }
     /**
-     * Sends an entity to a remote portal asynchronously.
+     * Sends an entity to a remote portal.
      *
      * @param targetIP remote peer IP
      * @param entity the entity to send

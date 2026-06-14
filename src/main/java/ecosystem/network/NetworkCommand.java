@@ -3,7 +3,7 @@ package ecosystem.network;
 import ecosystem.engine.Environment;
 
 /**
- * Command created from network data. Its execute() runs on the engine thread
+ * Command created from network data.
  * (it receives the Environment to modify).
  */
 public interface NetworkCommand {

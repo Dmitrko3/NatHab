@@ -2,12 +2,7 @@ package ecosystem.network;
 
 import java.util.*;
 
-/**
- * Simple parser/serializer for the text protocol:
- * VERSION|ACTION|TYPE|key1=val1,key2=val2
- *
- * Example: 1|SPAWN|Lion|energy=80,x=10,y=15
- */
+
 public final class EntityMessage {
 
     public enum Action { SPAWN, MOVE, UPDATE, REMOVE, PING, UNKNOWN }

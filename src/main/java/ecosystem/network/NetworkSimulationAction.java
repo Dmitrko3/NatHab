@@ -4,8 +4,7 @@ import ecosystem.engine.Environment;
 import ecosystem.engine.actions.SimulationAction;
 
 /**
- * Small adapter so NetworkCommand objects can be submitted to Environment.submitAction(...)
- * and run on the SimulationEngine thread.
+ * Small adapter so NetworkCommand objects can be submitted to Environment.submitAction
  */
 public class NetworkSimulationAction implements SimulationAction {
 
