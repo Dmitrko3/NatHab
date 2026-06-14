@@ -60,7 +60,8 @@ public class HerbivoreBehavior implements FeedingBehavior {
         if (!locked) return false;
         try {
             if (!target.isAlive() || !target.isEdibleBy(animal)) return false;
-            return animal.eat((Animal)target);
+            // Do NOT cast target to Animal — herbivores eat Plant/Consumable targets too.
+            return animal.eat(target);
         } finally {
             environment.unlockEntity(target);
         }
