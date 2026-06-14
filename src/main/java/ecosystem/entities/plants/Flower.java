@@ -1,8 +1,8 @@
 package ecosystem.entities.plants;
 
-import ecosystem.core.Environment;
-import ecosystem.core.Position;
-import ecosystem.entities.AbstractEntity;
+import ecosystem.engine.Environment;
+import ecosystem.engine.Position;
+import ecosystem.entities.base.AbstractEntity;
 import ecosystem.entities.animals.Animal;
 
 import java.util.ArrayList;

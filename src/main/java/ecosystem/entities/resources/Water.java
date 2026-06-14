@@ -1,9 +1,9 @@
 package ecosystem.entities.resources;
 
-import ecosystem.core.*;
-import ecosystem.entities.AbstractEntity;
+import ecosystem.engine.*;
+import ecosystem.entities.base.AbstractEntity;
 import ecosystem.entities.animals.Animal;
-import ecosystem.interfaces.*;
+import ecosystem.traits.*;
 
 import java.util.List;
 
@@ -32,7 +32,7 @@ public class Water extends Resource implements Consumable {
 
     /** All eaters can consume water (drinking) for energy. */
     @Override
-    public boolean isEdibleBy(ecosystem.interfaces.Eater consumer) {
+    public boolean isEdibleBy(ecosystem.traits.Eater consumer) {
         return consumer != null; // or more refined logic if you want
     }
 

@@ -4,12 +4,11 @@
 package ecosystem;
 
 import ecosystem.controller.SimulationController;
-import ecosystem.core.Environment;
-import ecosystem.core.Position;
-import ecosystem.core.SimulationEngine;
+import ecosystem.engine.Environment;
+import ecosystem.engine.Position;
+import ecosystem.engine.SimulationEngine;
 import ecosystem.entities.animals.Deer;
 import ecosystem.entities.animals.Lion;
-import ecosystem.entities.animals.Rabbit;
 import ecosystem.entities.plants.Flower;
 import ecosystem.entities.plants.Tree;
 import ecosystem.entities.resources.Rock;

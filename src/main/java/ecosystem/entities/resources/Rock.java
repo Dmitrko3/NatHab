@@ -1,7 +1,7 @@
 package ecosystem.entities.resources;
 
-import ecosystem.core.*;
-import ecosystem.entities.AbstractEntity;
+import ecosystem.engine.*;
+import ecosystem.entities.base.AbstractEntity;
 import ecosystem.entities.animals.Animal;
 
 import java.util.List;

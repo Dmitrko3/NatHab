@@ -1,7 +1,7 @@
 package ecosystem.ui;
 
-import ecosystem.core.*;
-import ecosystem.entities.*;
+import ecosystem.engine.*;
+import ecosystem.entities.base.AbstractEntity;
 
 import java.awt.Image;
 import java.util.HashMap;

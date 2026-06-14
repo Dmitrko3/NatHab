@@ -1,12 +1,11 @@
 package ecosystem.ui;
 
 import ecosystem.controller.*;
-import ecosystem.core.*;
-import ecosystem.entities.*;
-import ecosystem.entities.animals.*;
-import ecosystem.entities.plants.*;
-import ecosystem.entities.resources.*;
-import ecosystem.entities.EntityFactory;
+import ecosystem.engine.*;
+import ecosystem.entities.base.AbstractEntity;
+import ecosystem.entities.base.EntityFactory;
+import ecosystem.entities.base.LivingEntity;
+
 import javax.swing.BorderFactory;
 import javax.swing.JComboBox;
 import javax.swing.JDialog;

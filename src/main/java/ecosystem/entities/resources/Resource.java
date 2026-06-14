@@ -1,7 +1,7 @@
 package ecosystem.entities.resources;
 
-import ecosystem.core.Position;
-import ecosystem.entities.StaticEntity;
+import ecosystem.engine.Position;
+import ecosystem.entities.base.StaticEntity;
 
 /**
  * A fixed world resource, such as a rock or water.

@@ -1,8 +1,8 @@
 package ecosystem.controller;
 
-import ecosystem.core.*;
-import ecosystem.entities.*;
+import ecosystem.engine.*;
 import ecosystem.entities.animals.*;
+import ecosystem.entities.base.AbstractEntity;
 import ecosystem.entities.plants.*;
 import ecosystem.entities.resources.*;
 
@@ -119,37 +119,37 @@ public class SimulationController {
      */
     private boolean seedInitialWorld() {
         // ---- Static resources ----
-        environment.addEntity(new Rock(new ecosystem.core.Position(3, 3)));
-        environment.addEntity(new Rock(new ecosystem.core.Position(4, 3)));
-        environment.addEntity(new Rock(new ecosystem.core.Position(5, 3)));
-        environment.addEntity(new Rock(new ecosystem.core.Position(10, 10)));
-        environment.addEntity(new Rock(new ecosystem.core.Position(11, 10)));
+        environment.addEntity(new Rock(new ecosystem.engine.Position(3, 3)));
+        environment.addEntity(new Rock(new ecosystem.engine.Position(4, 3)));
+        environment.addEntity(new Rock(new ecosystem.engine.Position(5, 3)));
+        environment.addEntity(new Rock(new ecosystem.engine.Position(10, 10)));
+        environment.addEntity(new Rock(new ecosystem.engine.Position(11, 10)));
 
-        environment.addEntity(new Water(new ecosystem.core.Position(8,  8)));
-        environment.addEntity(new Water(new ecosystem.core.Position(9,  8)));
-        environment.addEntity(new Water(new ecosystem.core.Position(8,  9)));
+        environment.addEntity(new Water(new ecosystem.engine.Position(8,  8)));
+        environment.addEntity(new Water(new ecosystem.engine.Position(9,  8)));
+        environment.addEntity(new Water(new ecosystem.engine.Position(8,  9)));
 
         // ---- Plants ----
-        environment.addEntity(new Tree(new ecosystem.core.Position(2,  2)));
-        environment.addEntity(new Tree(new ecosystem.core.Position(15, 15)));
-        environment.addEntity(new Tree(new ecosystem.core.Position(1,  12)));
+        environment.addEntity(new Tree(new ecosystem.engine.Position(2,  2)));
+        environment.addEntity(new Tree(new ecosystem.engine.Position(15, 15)));
+        environment.addEntity(new Tree(new ecosystem.engine.Position(1,  12)));
 
-        environment.addEntity(new Flower(new ecosystem.core.Position(6,  6)));
-        environment.addEntity(new Flower(new ecosystem.core.Position(12, 4)));
-        environment.addEntity(new Flower(new ecosystem.core.Position(7,  14)));
-        environment.addEntity(new Flower(new ecosystem.core.Position(17, 7)));
+        environment.addEntity(new Flower(new ecosystem.engine.Position(6,  6)));
+        environment.addEntity(new Flower(new ecosystem.engine.Position(12, 4)));
+        environment.addEntity(new Flower(new ecosystem.engine.Position(7,  14)));
+        environment.addEntity(new Flower(new ecosystem.engine.Position(17, 7)));
 
         // ---- Herbivores ----
-        environment.addEntity(new Deer(new ecosystem.core.Position(5,  5)));
-        environment.addEntity(new Deer(new ecosystem.core.Position(14, 14)));
+        environment.addEntity(new Deer(new ecosystem.engine.Position(5,  5)));
+        environment.addEntity(new Deer(new ecosystem.engine.Position(14, 14)));
 
-        environment.addEntity(new Rabbit(new ecosystem.core.Position(6,  7)));
-        environment.addEntity(new Rabbit(new ecosystem.core.Position(11, 11)));
-        environment.addEntity(new Rabbit(new ecosystem.core.Position(3,  12)));
-        environment.addEntity(new Rabbit(new ecosystem.core.Position(16, 3)));
+        environment.addEntity(new Rabbit(new ecosystem.engine.Position(6,  7)));
+        environment.addEntity(new Rabbit(new ecosystem.engine.Position(11, 11)));
+        environment.addEntity(new Rabbit(new ecosystem.engine.Position(3,  12)));
+        environment.addEntity(new Rabbit(new ecosystem.engine.Position(16, 3)));
 
         // ---- Carnivore ----
-        environment.addEntity(new Lion(new ecosystem.core.Position(10, 5)));
+        environment.addEntity(new Lion(new ecosystem.engine.Position(10, 5)));
         return true;
     }
 }

@@ -1,7 +1,7 @@
 package ecosystem.ui;
 
 import ecosystem.controller.*;
-import ecosystem.core.*;
+import ecosystem.engine.*;
 
 import javax.swing.*;
 import java.awt.BorderLayout;

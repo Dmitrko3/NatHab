@@ -1,15 +1,14 @@
 package ecosystem.entities.animals;
 
-import ecosystem.behaviors.EntityState;
-import ecosystem.behaviors.FeedingBehavior;
-import ecosystem.behaviors.IdleState;
-import ecosystem.behaviors.MovementStrategy;
-import ecosystem.core.Environment;
-import ecosystem.core.Position;
-import ecosystem.entities.AbstractEntity;
-import ecosystem.entities.LivingEntity;
-import ecosystem.interfaces.*;
-import ecosystem.*;
+import ecosystem.behaviors.state.EntityState;
+import ecosystem.behaviors.diet.FeedingBehavior;
+import ecosystem.behaviors.state.IdleState;
+import ecosystem.behaviors.movement.MovementStrategy;
+import ecosystem.engine.Environment;
+import ecosystem.engine.Position;
+import ecosystem.entities.base.AbstractEntity;
+import ecosystem.entities.base.LivingEntity;
+import ecosystem.traits.*;
 
 import java.util.List;
 

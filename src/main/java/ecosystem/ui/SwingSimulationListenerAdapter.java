@@ -1,7 +1,7 @@
 package ecosystem.ui;
 
-import ecosystem.core.Environment;
-import ecosystem.core.SimulationListener;
+import ecosystem.engine.Environment;
+import ecosystem.engine.SimulationListener;
 
 import javax.swing.SwingUtilities;
 

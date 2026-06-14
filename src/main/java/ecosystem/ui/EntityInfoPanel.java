@@ -1,10 +1,10 @@
 package ecosystem.ui;
 
-import ecosystem.core.Environment;
-import ecosystem.entities.EntityDecorator;
-import ecosystem.entities.PoisonedDecorator;
-import ecosystem.entities.SpeedBoostDecorator;
-import ecosystem.entities.AbstractEntity;
+import ecosystem.engine.Environment;
+import ecosystem.entities.decorators.EntityDecorator;
+import ecosystem.entities.decorators.PoisonedDecorator;
+import ecosystem.entities.decorators.SpeedBoostDecorator;
+import ecosystem.entities.base.AbstractEntity;
 
 import javax.swing.*;
 import java.awt.*;

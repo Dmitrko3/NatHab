@@ -1,10 +1,10 @@
 package ecosystem.entities.animals;
 
-import ecosystem.behaviors.CarnivoreBehavior;
-import ecosystem.behaviors.ChaseMovement;
-import ecosystem.core.Environment;
-import ecosystem.core.Position;
-import ecosystem.entities.AbstractEntity;
+import ecosystem.behaviors.diet.CarnivoreBehavior;
+import ecosystem.behaviors.movement.ChaseMovement;
+import ecosystem.engine.Environment;
+import ecosystem.engine.Position;
+import ecosystem.entities.base.AbstractEntity;
 
 import java.util.List;
 

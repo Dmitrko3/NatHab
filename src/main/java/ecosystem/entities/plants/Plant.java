@@ -1,12 +1,12 @@
 package ecosystem.entities.plants;
 
-import ecosystem.core.Environment;
-import ecosystem.core.Position;
-import ecosystem.entities.LivingEntity;
-import ecosystem.interfaces.Consumable;
-import ecosystem.interfaces.Eater;
-import ecosystem.interfaces.EdibleByHerbivore;
-import ecosystem.interfaces.Reproducible;
+import ecosystem.engine.Environment;
+import ecosystem.engine.Position;
+import ecosystem.entities.base.LivingEntity;
+import ecosystem.traits.Consumable;
+import ecosystem.traits.Eater;
+import ecosystem.traits.EdibleByHerbivore;
+import ecosystem.traits.Reproducible;
 /**
  * Base class for all plants.
  *

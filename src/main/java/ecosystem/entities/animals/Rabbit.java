@@ -1,13 +1,12 @@
 package ecosystem.entities.animals;
 
-import ecosystem.behaviors.HerbivoreBehavior;
-import ecosystem.behaviors.FeedingBehavior;
-import ecosystem.behaviors.RandomMovement;
-import ecosystem.core.Environment;
-import ecosystem.core.Position;
-import ecosystem.entities.AbstractEntity;
-import ecosystem.interfaces.EdibleByCarnivore;
-import ecosystem.interfaces.Reproducible;
+import ecosystem.behaviors.diet.HerbivoreBehavior;
+import ecosystem.behaviors.movement.RandomMovement;
+import ecosystem.engine.Environment;
+import ecosystem.engine.Position;
+import ecosystem.entities.base.AbstractEntity;
+import ecosystem.traits.EdibleByCarnivore;
+import ecosystem.traits.Reproducible;
 
 import java.util.List;
 import java.util.Random;

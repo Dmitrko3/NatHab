@@ -1,0 +1,25 @@
+package ecosystem.behaviors.diet;
+
+import ecosystem.entities.animals.*;
+import ecosystem.engine.Environment;
+import ecosystem.entities.base.AbstractEntity;
+
+import java.util.List;
+
+/**
+ * Feeding behavior for animals.
+ *
+ * <p>Uses the nearby entities to choose what the animal should try to eat.
+ */
+public interface FeedingBehavior {
+    /**
+     * Tries to eat the best available target nearby.
+     *
+     * @param animal the animal that is eating
+     * @param nearby nearby entities the animal can see
+     * @return {@code true} if the animal ate something
+     */
+    boolean eat(Animal animal, List<AbstractEntity> nearby, Environment environment);
+    default boolean isCarnivore() { return false; }
+    default boolean isHerbivore() { return false; }
+}
