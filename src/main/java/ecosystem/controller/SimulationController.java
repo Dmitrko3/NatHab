@@ -5,7 +5,11 @@ import ecosystem.entities.animals.*;
 import ecosystem.entities.base.AbstractEntity;
 import ecosystem.entities.plants.*;
 import ecosystem.entities.resources.*;
-
+import ecosystem.network.NetworkManager;
+import ecosystem.engine.actions.SimulationAction;
+import ecosystem.engine.actions.RemoveEntityAction;
+import java.util.LinkedHashMap;
+import java.util.Map;
 import javax.swing.Timer;
 
 /**
@@ -16,6 +20,8 @@ public class SimulationController {
 
     private final SimulationEngine engine;
     private final Environment environment;
+    private NetworkManager networkManager;
+
 
     private Timer runTimer;
     /**
@@ -150,6 +156,48 @@ public class SimulationController {
 
         // ---- Carnivore ----
         environment.addEntity(new Lion(new ecosystem.engine.Position(10, 5)));
+        return true;
+
+    }
+    public void setNetworkManager(NetworkManager networkManager) {
+        this.networkManager = networkManager;
+    }
+    /** * Sends the specified entity to the remote portal (non-blocking from EDT). * This method will perform network I/O in a background thread and enqueue * a removal action on the engine thread after sending. * * @param targetIP remote peer IP * @param entity the entity to send * @return true if the request to send was initiated, false on invalid input */
+    public boolean sendEntityToPortal(String targetIP, AbstractEntity entity) {
+        if (targetIP == null || targetIP.trim().isEmpty() || entity == null) {
+            return false;
+        }
+        if (networkManager == null) {
+            System.err.println("NetworkManager is not configured on controller");
+            return false;
+        }
+
+        // Run network I/O off the EDT
+        new Thread(() -> {
+            try {
+                // Build a simple protocol line: version|ACTION|TYPE|energy=...,x=...,y=...
+                String type = entity.getClass().getSimpleName();
+                int x = entity.getPosition().getX();
+                int y = entity.getPosition().getY();
+                int energy = (int) Math.round(entity.getEnergy());
+
+                // If you have EntityMessage available, you can use it here instead (recommended).
+                // Fallback simple builder:
+                String message = String.format("1|SPAWN|%s|energy=%d,x=%d,y=%d", type, energy, x, y);
+
+                // Send over network (this is blocking on the background thread)
+                networkManager.sendEntity(targetIP, message);
+
+                // After sending, request the engine thread remove the entity by submitting a SimulationAction.
+                environment.submitAction(new RemoveEntityAction(entity));
+
+                System.out.println("Send to portal completed for " + entity + " -> " + targetIP);
+            } catch (Exception ex) {
+                System.err.println("Failed to send entity to portal: " + ex.getMessage());
+                ex.printStackTrace();
+            }
+        }, "SendEntityToPortalThread").start();
+
         return true;
     }
 }
