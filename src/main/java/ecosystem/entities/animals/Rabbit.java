@@ -75,6 +75,6 @@ public class Rabbit extends Animal implements EdibleByCarnivore, Reproducible {
 
     @Override
     public boolean eat(Animal animal, List<AbstractEntity> nearby, Environment environment) {
-        return false;
+        return true;
     }
 }

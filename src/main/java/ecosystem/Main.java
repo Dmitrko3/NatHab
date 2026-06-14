@@ -9,6 +9,7 @@ import ecosystem.engine.Position;
 import ecosystem.engine.SimulationEngine;
 import ecosystem.entities.animals.Deer;
 import ecosystem.entities.animals.Lion;
+import ecosystem.entities.animals.Rabbit;
 import ecosystem.entities.plants.Flower;
 import ecosystem.entities.plants.Tree;
 import ecosystem.entities.resources.Rock;
@@ -58,12 +59,12 @@ public class Main {
             // ---- Herbivores ----
             env.addEntity(new Deer(new Position(5,  5)));
             env.addEntity(new Deer(new Position(14, 14)));
-/**
+
             env.addEntity(new Rabbit(new Position(6,  7)));
             env.addEntity(new Rabbit(new Position(11, 11)));
             env.addEntity(new Rabbit(new Position(3,  12)));
             env.addEntity(new Rabbit(new Position(16, 3)));
-**/
+
             // ---- Carnivore ----
             env.addEntity(new Lion(new Position(10, 5)));
             env.addEntity(new Lion(new Position(11, 7)));
