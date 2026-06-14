@@ -60,11 +60,12 @@ public class Main {
             // ---- Herbivores ----
             env.addEntity(new Deer(new Position(5,  5)));
             env.addEntity(new Deer(new Position(14, 14)));
-/**
+
             env.addEntity(new Rabbit(new Position(6,  7)));
             env.addEntity(new Rabbit(new Position(11, 11)));
             env.addEntity(new Rabbit(new Position(3,  12)));
             env.addEntity(new Rabbit(new Position(16, 3)));
+
             // ---- Carnivore ----
             env.addEntity(new Lion(new Position(10, 5)));
             env.addEntity(new Lion(new Position(11, 7)));
@@ -75,32 +76,7 @@ public class Main {
 
             engine.addSimulationListener(new ecosystem.ui.SwingSimulationListenerAdapter(frame));
             engine.addSimulationListener(new ecosystem.ui.SwingSimulationListenerAdapter(frame.getSimulationPanel()));
-            // Create and start the network manager
-            ecosystem.network.NetworkManager net = new ecosystem.network.NetworkManager(env);
-            net.startServer();
 
-            // Give network manager to controller so it can send entities
-            controller.setNetworkManager(net);
-
-            // Tell the info panel about the controller so it can trigger sends
-            frame.getInfoPanel().setController(controller);
-
-            // Ensure we stop the server when the window closes
-            frame.addWindowListener(new java.awt.event.WindowAdapter() {
-                @Override
-                public void windowClosing(java.awt.event.WindowEvent e) {
-                    net.stopServer();
-                }
-            });
-
-            // Ensure the server is stopped when the window closes
-            frame.addWindowListener(new java.awt.event.WindowAdapter() {
-                @Override
-                public void windowClosing(java.awt.event.WindowEvent e) {
-                    net.stopServer();
-                    // Optionally: allow a small delay for cleanup, or log shutdown
-                }
-            });
             frame.showWindow();
         });
     }
