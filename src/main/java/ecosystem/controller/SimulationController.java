@@ -172,7 +172,6 @@ public class SimulationController {
             return false;
         }
 
-        // Run network I/O off the EDT
         new Thread(() -> {
             try {
                 // Build a simple protocol line: version|ACTION|TYPE|energy=...,x=...,y=...

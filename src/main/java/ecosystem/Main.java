@@ -76,7 +76,10 @@ public class Main {
 
             engine.addSimulationListener(new ecosystem.ui.SwingSimulationListenerAdapter(frame));
             engine.addSimulationListener(new ecosystem.ui.SwingSimulationListenerAdapter(frame.getSimulationPanel()));
-
+            // Create and start the network manager
+            ecosystem.network.NetworkManager net = new ecosystem.network.NetworkManager(env);
+            net.startServer();
+            controller.setNetworkManager(net);
             frame.showWindow();
         });
     }
