@@ -162,7 +162,13 @@ public class SimulationController {
     public void setNetworkManager(NetworkManager networkManager) {
         this.networkManager = networkManager;
     }
-    /** * Sends the specified entity to the remote portal (non-blocking from EDT). * This method will perform network I/O in a background thread and enqueue * a removal action on the engine thread after sending. * * @param targetIP remote peer IP * @param entity the entity to send * @return true if the request to send was initiated, false on invalid input */
+    /**
+     * Sends an entity to a remote portal asynchronously.
+     *
+     * @param targetIP remote peer IP
+     * @param entity the entity to send
+     * @return true if the send request was started, false on invalid input
+     */
     public boolean sendEntityToPortal(String targetIP, AbstractEntity entity) {
         if (targetIP == null || targetIP.trim().isEmpty() || entity == null) {
             return false;
@@ -174,23 +180,34 @@ public class SimulationController {
 
         new Thread(() -> {
             try {
-                // Build a simple protocol line: version|ACTION|TYPE|energy=...,x=...,y=...
+                //Get the entity type
                 String type = entity.getClass().getSimpleName();
-                int x = entity.getPosition().getX();
-                int y = entity.getPosition().getY();
-                int energy = (int) Math.round(entity.getEnergy());
 
-                // If you have EntityMessage available, you can use it here instead (recommended).
-                // Fallback simple builder:
-                String message = String.format("1|SPAWN|%s|energy=%d,x=%d,y=%d", type, energy, x, y);
+                //Build the message using your EntityMessage class
+                Map<String, String> payload = new LinkedHashMap<>();
+                payload.put("energy", String.valueOf((int) Math.round(entity.getEnergy())));
+                payload.put("x", String.valueOf(entity.getPosition().getX()));
+                payload.put("y", String.valueOf(entity.getPosition().getY()));
 
-                // Send over network (this is blocking on the background thread)
-                networkManager.sendEntity(targetIP, message);
+                ecosystem.network.EntityMessage msg = new ecosystem.network.EntityMessage(
+                        1,
+                        ecosystem.network.EntityMessage.Action.SPAWN,
+                        type,
+                        payload
+                );
+                String message = msg.toProtocolString();
 
-                // After sending, request the engine thread remove the entity by submitting a SimulationAction.
-                environment.submitAction(new RemoveEntityAction(entity));
+                // Send over network and check if successful
+                boolean success = networkManager.sendEntity(targetIP, message);
 
-                System.out.println("Send to portal completed for " + entity + " -> " + targetIP);
+                // \Only remove the entity from our world if it successfully arrived
+                if (success) {
+                    environment.submitAction(new RemoveEntityAction(entity));
+                    System.out.println("Send to portal completed for " + entity + " -> " + targetIP);
+                } else {
+                    System.err.println("Failed to send entity, keeping it on the local board.");
+                }
+
             } catch (Exception ex) {
                 System.err.println("Failed to send entity to portal: " + ex.getMessage());
                 ex.printStackTrace();

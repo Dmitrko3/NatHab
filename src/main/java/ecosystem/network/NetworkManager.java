@@ -30,9 +30,15 @@ public class NetworkManager {
 
         serverThread = new Thread(() -> {
             try {
-                serverSocket = new ServerSocket(PORT);
+                // FIX: Explicitly bind to the IPv4 wildcard address
+                serverSocket = new ServerSocket();
                 serverSocket.setReuseAddress(true);
+                serverSocket.bind(new java.net.InetSocketAddress("0.0.0.0", PORT));
+
+                // Helpful print to show your ACTUAL local IP to give to your friend
+                String myIP = java.net.InetAddress.getLocalHost().getHostAddress();
                 System.out.println("Server is listening on port " + PORT);
+                System.out.println("--> TELL YOUR FRIEND TO USE THIS IP: " + myIP);
 
                 while (running) {
                     try {
@@ -132,16 +138,17 @@ public class NetworkManager {
     }
 
     // Existing sendEntity method left functionally the same but with try-with-resources
-    public void sendEntity(String targetIP, String entityData) {
+// In NetworkManager.java
+    public boolean sendEntity(String targetIP, String entityData) {
         try (Socket socket = new Socket(targetIP, PORT);
              PrintWriter out = new PrintWriter(socket.getOutputStream(), true)) {
-
             out.println(entityData);
             System.out.println("Successfully sent entity to " + targetIP);
-
+            return true; // Success!
         } catch (IOException e) {
             System.err.println("Failed to send entity to " + targetIP);
             e.printStackTrace();
+            return false; // Failed!
         }
     }
 }
