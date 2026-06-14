@@ -60,6 +60,7 @@ public class Main {
             // ---- Herbivores ----
             env.addEntity(new Deer(new Position(5,  5)));
             env.addEntity(new Deer(new Position(14, 14)));
+/**
             env.addEntity(new Rabbit(new Position(6,  7)));
             env.addEntity(new Rabbit(new Position(11, 11)));
             env.addEntity(new Rabbit(new Position(3,  12)));

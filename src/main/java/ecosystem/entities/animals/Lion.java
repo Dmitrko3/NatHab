@@ -23,6 +23,6 @@ public class Lion extends Animal {
 
     @Override
     public boolean eat(Animal animal, List<AbstractEntity> nearby, Environment environment) {
-        return false;
+        return true;
     }
 }

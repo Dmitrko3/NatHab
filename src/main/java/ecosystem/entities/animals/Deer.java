@@ -65,6 +65,6 @@ public class Deer extends Animal implements EdibleByCarnivore {
 
     @Override
     public boolean eat(Animal animal, List<AbstractEntity> nearby, Environment environment) {
-        return false;
+        return true;
     }
 }
