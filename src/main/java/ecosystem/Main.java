@@ -80,6 +80,10 @@ public class Main {
             ecosystem.network.NetworkManager net = new ecosystem.network.NetworkManager(env);
             net.startServer();
             controller.setNetworkManager(net);
+
+            // NEW: wire the controller into the info panel so sendButton has a controller to call
+            frame.getInfoPanel().setController(controller);
+
             frame.showWindow();
         });
     }
